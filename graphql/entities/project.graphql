@@ -1,0 +1,94 @@
+# Project queries
+extend type Query @guard {
+    GetProjects(
+        orderBy: _ @orderBy(columns: ["created_at"])
+        hasUser: _ @whereHasConditions(columns: ["uuid"])
+        hasCategory: _ @whereHasConditions(columns: ["uuid", "title"])
+    ): [Project!]! @paginate
+    Project(uuid: String! @eq): Project @first
+    GetProjectCategories(
+        orderBy: _ @orderBy(columns: ["created_at"])
+    ): [ProjectCategory!]! @paginate
+    ProjectCategory(uuid: String! @eq): ProjectCategory @first
+    GetProjectEntries(
+        orderBy: _ @orderBy(columns: ["created_at"])
+        hasUser: _ @whereHasConditions(columns: ["uuid"])
+        hasProject: _
+            @whereHasConditions(columns: ["uuid", "project_category_id"])
+    ): [ProjectEntry!]! @paginate
+    ProjectEntry(uuid: String! @eq): ProjectEntry @first
+}
+
+# Project mutations
+extend type Mutation @guard {
+    UploadImage(image: Upload!): String!
+        @field(resolver: "ProjectMutator@uploadImage")
+    CreateProjectCategory(title: String!): ProjectCategory!
+        @field(resolver: "ProjectMutator@createProjectCategory")
+    UpdateProjectCategory(
+        project_category_uuid: String!
+        title: String!
+    ): ProjectCategory! @field(resolver: "ProjectMutator@updateProjectCategory")
+    CreateProject(
+        photo_url: Upload
+        title: String!
+        end_date: String!
+        prize: String!
+        description: String!
+        requirements: String!
+        type: String!
+        total_points: String!
+        project_category_id: Int!
+    ): Project! @field(resolver: "ProjectMutator@createProject")
+    UpdateProject(
+        photo_url: Upload
+        title: String
+        end_date: String
+        prize: String
+        description: String
+        requirements: String
+        type: String
+        total_points: String
+        project_category_id: Int
+        status: String
+    ): Project! @field(resolver: "ProjectMutator@updateProject")
+    CreateProjectMilestone(
+        title: String!
+        points: String!
+        project_id: String!
+        index: Int!
+    ): ProjectMilestone!
+        @field(resolver: "ProjectMutator@createProjectMilestone")
+    UpdateProjectMilestone(
+        project_milestone_uuid: String!
+        title: String
+        points: String
+        index: Int
+    ): ProjectMilestone!
+        @field(resolver: "ProjectMutator@updateProjectMilestone")
+    JoinProject(
+        project_id: Int!
+        title: String!
+        description: String!
+    ): ProjectEntry! @field(resolver: "ProjectMutator@joinProject")
+    UpdateProjectEntry(
+        project_entry_uuid: String!
+        title: String
+        description: String
+        images: [String!]
+        status: String
+    ): ProjectEntry! @field(resolver: "ProjectMutator@updateProjectEntry")
+    SaveProjectEntryBookmark(project_entry_id: Int!): ProjectEntryBookmark!
+        @field(resolver: "ProjectMutator@saveProjectEntryBookmark")
+    SaveProjectEntryLike(project_entry_id: Int!): ProjectEntryLike!
+        @field(resolver: "ProjectMutator@saveProjectEntryLike")
+    SaveProjectEntryComment(
+        project_entry_id: Int!
+        content: String!
+        is_reply: Boolean!
+        replied_comment_id: Int
+    ): ProjectEntryComment!
+        @field(resolver: "ProjectMutator@saveProjectEntryComment")
+    DeleteProjectMilestone(uuid: String!): Boolean!
+        @field(resolver: "ProjectMutator@deleteProjectMilestone")
+}

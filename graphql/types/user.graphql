@@ -1,0 +1,134 @@
+"Account of a person who uses this application."
+type User {
+    "Unique primary key."
+    id: ID!
+
+    "Unique UUID"
+    uuid: String!
+
+    "Non-unique name."
+    name: String!
+
+    "Unique email address."
+    email: String!
+
+    "Unique username"
+    username: String
+
+    "User wallet"
+    wallet: Wallet! @hasOne
+
+    "User profile"
+    profile: Profile! @hasOne
+
+    "User conversations"
+    conversations: [Conversation!]
+
+    "User project entries"
+    project_entries: [ProjectEntry!] @hasMany
+
+    "When the email was verified."
+    email_verified_at: DateTime
+
+    "When the account was created."
+    created_at: DateTime!
+
+    "When the account was last updated."
+    updated_at: DateTime!
+}
+
+"The profile info of a person who uses this application."
+type Profile {
+    "Unique primary key."
+    id: ID!
+
+    "Unique UUID"
+    uuid: String!
+
+    "The user profile photo"
+    photo_url: String
+
+    "The user current point"
+    points: Float!
+
+    "The profile bio"
+    bio: String
+
+    "The user school"
+    school: String
+
+    "The user student number"
+    student_number: String
+
+    "The user year of enrollment"
+    year_of_enrollment: String
+
+    "The user account type. Can be 'student' or 'teacher'"
+    type: String!
+
+    "An array of the user's currently enrolled course"
+    enrolled_courses: [Course!]
+
+    "An array of the user's currently enrolled classes"
+    enrolled_classes: [BouhawsClass!]
+
+    "User push notification status"
+    push_notification_enabled: Boolean!
+
+    "When the profile was created."
+    created_at: DateTime!
+
+    "When the profile was last updated."
+    updated_at: DateTime!
+}
+
+"A conversation created by a user. It is equivalent to a new chat"
+type Conversation {
+    "Unique primary key."
+    id: ID!
+
+    "Unique UUID"
+    uuid: String!
+
+    "The user that started the conversation"
+    user: User! @belongsTo
+
+    "Other users that are part of the conversation"
+    associated_users: [User!]
+
+    "When the conversation was created."
+    created_at: DateTime!
+
+    "When the conversation was last updated."
+    updated_at: DateTime!
+}
+
+"A single conversation message sent by a user"
+type ConversationMessage {
+    "Unique primary key."
+    id: ID!
+
+    "Unique UUID"
+    uuid: String!
+
+    "The type of message. Can be 'text', 'image', 'image_gallery'"
+    type: String!
+
+    "The user that sent the message"
+    user: User! @belongsTo
+
+    "The conversation itself"
+    conversation: Conversation @belongsTo
+
+    "The text data attacth to the message"
+    content: String
+
+    "The media attached to the message. For text image the will hold the image_cdn_url, for the image_gallery, it would hold a stringified array of all the image_cdn_url of each image in the gallery"
+    media: String
+
+    "When the conversation message was created."
+    created_at: DateTime!
+
+    "When the conversation message was last updated."
+    updated_at: DateTime!
+}

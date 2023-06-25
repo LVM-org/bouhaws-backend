@@ -1,0 +1,56 @@
+"A single bouhaws class"
+type BouhawsClass {
+    "Unique primary key."
+    id: ID!
+
+    "Unique UUID"
+    uuid: String!
+
+    "The user that own the class"
+    user: User! @belongsTo
+
+    "The class title"
+    title: String!
+
+    "All projects attached to a class"
+    projects: [Project!] @hasMany
+
+    "The class description"
+    description: String
+
+    "When the class was created."
+    created_at: DateTime!
+
+    "When the class was last updated."
+    updated_at: DateTime!
+}
+
+"A single course"
+type Course {
+    "Unique primary key."
+    id: ID!
+
+    "Unique UUID"
+    uuid: String!
+
+    "The course code"
+    code: String
+
+    "The course title"
+    title: String!
+
+    "The course photo_url"
+    photo_url: String
+
+    "The course status. Default is 'active'"
+    status: String!
+
+    "The bouhaws class to which the course belongs"
+    bouhaws_class: BouhawsClass! @belongsTo
+
+    "When the course was created."
+    created_at: DateTime!
+
+    "When the course was last updated."
+    updated_at: DateTime!
+}

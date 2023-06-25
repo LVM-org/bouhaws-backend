@@ -1,0 +1,74 @@
+"A single wallet"
+type Wallet {
+    "Unique primary key."
+    id: ID!
+
+    "Unique UUID"
+    uuid: String!
+
+    "The wallet total balance"
+    total_balance: Float!
+
+    "The wallet debited amount"
+    debited_amount: Float!
+
+    "The wallet credited amount"
+    credited_amount: Float!
+
+    "The wallet owner"
+    user: User! @belongsTo
+
+    "All wallet transactions"
+    transactions: [Transaction!] @hasMany
+
+    "When the wallet was created."
+    created_at: DateTime!
+
+    "When the wallet was last updated."
+    updated_at: DateTime!
+}
+
+"A single transaction"
+type Transaction {
+    "Unique primary key."
+    id: ID!
+
+    "Unique UUID"
+    uuid: String!
+
+    "The transaction description"
+    description: String!
+
+    "The transaction gateway"
+    gateway: String!
+
+    "The user that own the transaction"
+    user: User! @belongsTo
+
+    "The wallet that own the transaction"
+    wallet: Wallet! @belongsTo
+
+    "The trasaction flow. It can be 'debit' or 'credit'"
+    dr_or_cr: String!
+
+    "The chargeable entity. This links the entry that is associated with the transaction"
+    chargeable_type: String!
+
+    "The chargeable entity id"
+    chargeable_id: Int!
+
+    "The wallet balance before the transaction happened"
+    wallet_balance: Float!
+
+    "The amount in the transaction"
+    amount: Float!
+
+    "The transaction charges"
+    charges: Float!
+
+    "When the transaction was created."
+    created_at: DateTime!
+
+    "When the transaction was last updated."
+    updated_at: DateTime!
+}

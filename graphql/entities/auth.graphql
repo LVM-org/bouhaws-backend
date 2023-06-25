@@ -1,0 +1,25 @@
+# Auth Queries
+extend type Query @guard {
+    AuthUser: User @auth
+}
+
+# Auth mutations
+extend type Mutation {
+    SignUp(email: String!, password: String!): User!
+        @field(resolver: "AuthMutator@signUp")
+    SignIn(password: String!, email: String! @trim): AuthResponse!
+        @field(resolver: "AuthMutator@signIn")
+    VerifyEmailOTP(email: String!, otp: String!): User!
+        @field(resolver: "AuthMutator@verifyEmailOTP")
+    ResendVerifyEmail(user_uuid: String!): Boolean!
+        @field(resolver: "AuthMutator@resendVerifyEmail")
+    SendResetPasswordEmail(email: String!): Boolean!
+        @field(resolver: "AuthMutator@sendResetPasswordEmail")
+    UpdatePassword(
+        user_uuid: String!
+        password: String!
+        old_password: String!
+        otp: String
+    ): Boolean! @field(resolver: "AuthMutator@updatePassword")
+    SignOut: Boolean! @field(resolver: "AuthMutator@signOut")
+}

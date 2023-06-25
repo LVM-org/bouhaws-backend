@@ -1,0 +1,215 @@
+"A new project"
+type Project {
+    "Unique primary key."
+    id: ID!
+
+    "Unique UUID"
+    uuid: String!
+
+    "The project title"
+    title: String!
+
+    "The project owner"
+    user: User! @belongsTo
+
+    "The project end date"
+    end_date: DateTime!
+
+    "The project prize"
+    prize: String!
+
+    "The project currency"
+    currency: String!
+
+    "The project description"
+    description: String
+
+    "The project requirements"
+    requirements: String
+
+    "The project image url"
+    photo_url: String
+
+    "The project type. Can be 'event', 'challenge', 'course'"
+    type: String!
+
+    "The project total points"
+    total_points: Float!
+
+    "The project category"
+    category: ProjectCategory! @belongsTo
+
+    "The project entries"
+    entries: [ProjectEntry!] @hasMany
+
+    "The project milestones"
+    milestones: [ProjectMilestone!] @hasMany
+
+    "When the project was created."
+    created_at: DateTime!
+
+    "When the project was last updated."
+    updated_at: DateTime!
+}
+
+"A single project category"
+type ProjectCategory {
+    "Unique primary key."
+    id: ID!
+
+    "Unique UUID"
+    uuid: String!
+
+    "The category title"
+    title: String!
+
+    "When the project category was created."
+    created_at: DateTime!
+
+    "When the project category was last updated."
+    updated_at: DateTime!
+}
+
+"A single project milestone"
+type ProjectMilestone {
+    "Unique primary key."
+    id: ID!
+
+    "Unique UUID"
+    uuid: String!
+
+    "The milestone title"
+    title: String!
+
+    "The milestone points"
+    points: Float!
+
+    "The milestone index"
+    index: Int!
+
+    "The project itself"
+    project: Project! @belongsTo
+
+    "When the project milestone was created."
+    created_at: DateTime!
+
+    "When the project milestone was last updated."
+    updated_at: DateTime!
+}
+
+"A single project entry"
+type ProjectEntry {
+    "Unique primary key."
+    id: ID!
+
+    "Unique UUID"
+    uuid: String!
+
+    "The user that made the entry"
+    user: User! @belongsTo
+
+    "The project itself"
+    project: Project! @belongsTo
+
+    "The current project milestone for the entry"
+    current_milestone_index: Int!
+
+    "The entry title"
+    title: String!
+
+    "The entry description"
+    description: String!
+
+    "The entry images. This is an array of all the images_cdn_url"
+    images: [String!]
+
+    "The status of the entry. Default is 'active'"
+    status: String
+
+    "The entry likes"
+    likes: [ProjectEntryLike!] @hasMany
+
+    "The entry bookmarks"
+    bookmarks: [ProjectEntryBookmark!] @hasMany
+
+    "The entry comments"
+    comments: [ProjectEntryComment!] @hasMany
+
+    "When the project entry was created."
+    created_at: DateTime!
+
+    "When the project entry was last updated."
+    updated_at: DateTime!
+}
+
+"A single project entry bookmark"
+type ProjectEntryBookmark {
+    "Unique primary key."
+    id: ID!
+
+    "Unique UUID"
+    uuid: String!
+
+    "The user that made the entry bookmark"
+    user: User! @belongsTo
+
+    "The project entry itself"
+    project_entry: ProjectEntry! @belongsTo
+
+    "When the project entry bookmark was created."
+    created_at: DateTime!
+
+    "When the project entry bookmark was last updated."
+    updated_at: DateTime!
+}
+
+"A single project entry comment"
+type ProjectEntryComment {
+    "Unique primary key."
+    id: ID!
+
+    "Unique UUID"
+    uuid: String!
+
+    "The user that made the entry comment"
+    user: User! @belongsTo
+
+    "The project entry itself"
+    project_entry: ProjectEntry! @belongsTo
+
+    "The coment content"
+    content: String!
+
+    "Is the comment a reply or not"
+    is_reply: Boolean!
+
+    "The replied comment ID if the comment is a reply"
+    replied_comment_id: Int
+
+    "When the project entry comment was created."
+    created_at: DateTime!
+
+    "When the project entry comment was last updated."
+    updated_at: DateTime!
+}
+
+"A single project entry like"
+type ProjectEntryLike {
+    "Unique primary key."
+    id: ID!
+
+    "Unique UUID"
+    uuid: String!
+
+    "The user that made the entry like"
+    user: User! @belongsTo
+
+    "The project entry itself"
+    project_entry: ProjectEntry! @belongsTo
+
+    "When the project entry like was created."
+    created_at: DateTime!
+
+    "When the project entry like was last updated."
+    updated_at: DateTime!
+}

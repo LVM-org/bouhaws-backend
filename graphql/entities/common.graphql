@@ -1,0 +1,36 @@
+# Common queries
+extend type Query @guard {
+    GetBouhawsClasses(
+        orderBy: _ @orderBy(columns: ["created_at"])
+    ): [BouhawsClass!]! @paginate
+    BouhawsClass(uuid: String! @eq): BouhawsClass @first
+    GetCourses(orderBy: _ @orderBy(columns: ["created_at"])): [Course!]!
+        @paginate
+    Course(uuid: String! @eq): Course @first
+}
+
+# Common mutations
+extend type Mutation @guard {
+    CreateBouhawsClass(title: String!, description: String!): BouhawsClass!
+        @field(resolver: "CommonMutator@createBouhawsClass")
+    UpdateBouhawsClass(
+        bouhaws_class_uuid: String!
+        title: String
+        # Stringified array of project ids
+        projects_id: String
+        description: String
+    ): BouhawsClass! @field(resolver: "CommonMutator@updateBouhawsClass")
+    CreateCourse(
+        photo_url: Upload
+        code: String!
+        title: String!
+        bouhaws_class_id: Int!
+    ): Course! @field(resolver: "CommonMutator@createCourse")
+    UpdateCourse(
+        course_uuid: String!
+        photo_url: Upload
+        code: String
+        title: String
+        status: String
+    ): Course! @field(resolver: "CommonMutator@updateCourse")
+}

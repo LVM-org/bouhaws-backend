@@ -1,0 +1,40 @@
+extend type Query @guard {
+    LeaderBoard: [User!] @field(resolver: "UserQuery@leaderboard")
+    Conversation(uuid: String! @eq): Conversation @first
+}
+
+# User mutations
+extend type Mutation @guard {
+    UpdateProfile(
+        username: String
+        name: String
+        photo_url: Upload
+        bio: String
+        school: String
+        student_number: String
+        year_of_enrollment: String
+        type: String
+        push_notification_enabled: Boolean
+    ): BouhawsClass! @field(resolver: "UserMutator@updateProfile")
+
+    StartConversation(
+        # An array of the uuid of the other users in the conversation
+        associated_users_uuid: [String!]
+    ): Conversation! @field(resolver: "UserMutator@startConversation")
+
+    JoinConversation(
+        conversation_uuid: String!
+        # An array of the uuid of the new users to be added to the conversation
+        associated_users_uuid: [String!]
+    ): Conversation! @field(resolver: "UserMutator@joinConversation")
+
+    SaveConversationMessage(
+        # can be text, image, image_gallery
+        type: String!
+        conversation_id: Int!
+        content: String!
+        # For single image message, send the uploaded image url, for image_gallery message, send an stringified array of the uploaded images url
+        media: String!
+    ): ConversationMessages!
+        @field(resolver: "UserMutator@saveConversationMessage")
+}
