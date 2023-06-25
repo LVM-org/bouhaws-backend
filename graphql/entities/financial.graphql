@@ -1,3 +1,4 @@
 extend type Query @guard {
+    "Get the authenticated user wallet"
     UserWallet: Wallet @field(resolver: "UserQuery@userWallet")
 }

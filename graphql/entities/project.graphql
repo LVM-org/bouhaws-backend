@@ -1,34 +1,44 @@
 # Project queries
 extend type Query @guard {
+    "Get many projects"
     GetProjects(
         orderBy: _ @orderBy(columns: ["created_at"])
         hasUser: _ @whereHasConditions(columns: ["uuid"])
         hasCategory: _ @whereHasConditions(columns: ["uuid", "title"])
     ): [Project!]! @paginate
+    "Get a single project"
     Project(uuid: String! @eq): Project @first
+    "Get many project categories"
     GetProjectCategories(
         orderBy: _ @orderBy(columns: ["created_at"])
     ): [ProjectCategory!]! @paginate
+    "Get a single project category"
     ProjectCategory(uuid: String! @eq): ProjectCategory @first
+    "Get many project entries"
     GetProjectEntries(
         orderBy: _ @orderBy(columns: ["created_at"])
         hasUser: _ @whereHasConditions(columns: ["uuid"])
         hasProject: _
             @whereHasConditions(columns: ["uuid", "project_category_id"])
     ): [ProjectEntry!]! @paginate
+    "Get a single project entry"
     ProjectEntry(uuid: String! @eq): ProjectEntry @first
 }
 
 # Project mutations
 extend type Mutation @guard {
+    "Upload an image"
     UploadImage(image: Upload!): String!
         @field(resolver: "ProjectMutator@uploadImage")
+    "Create a new project category"
     CreateProjectCategory(title: String!): ProjectCategory!
         @field(resolver: "ProjectMutator@createProjectCategory")
+    "Update a project category"
     UpdateProjectCategory(
         project_category_uuid: String!
         title: String!
     ): ProjectCategory! @field(resolver: "ProjectMutator@updateProjectCategory")
+    "Create a new project"
     CreateProject(
         photo_url: Upload
         title: String!
@@ -40,6 +50,7 @@ extend type Mutation @guard {
         total_points: String!
         project_category_id: Int!
     ): Project! @field(resolver: "ProjectMutator@createProject")
+    "Update a project"
     UpdateProject(
         photo_url: Upload
         title: String
@@ -52,6 +63,7 @@ extend type Mutation @guard {
         project_category_id: Int
         status: String
     ): Project! @field(resolver: "ProjectMutator@updateProject")
+    "Create a new project milestone"
     CreateProjectMilestone(
         title: String!
         points: String!
@@ -59,6 +71,7 @@ extend type Mutation @guard {
         index: Int!
     ): ProjectMilestone!
         @field(resolver: "ProjectMutator@createProjectMilestone")
+    "Update a project milestone"
     UpdateProjectMilestone(
         project_milestone_uuid: String!
         title: String
@@ -66,11 +79,13 @@ extend type Mutation @guard {
         index: Int
     ): ProjectMilestone!
         @field(resolver: "ProjectMutator@updateProjectMilestone")
+    "Join a project"
     JoinProject(
         project_id: Int!
         title: String!
         description: String!
     ): ProjectEntry! @field(resolver: "ProjectMutator@joinProject")
+    "Update a project entry"
     UpdateProjectEntry(
         project_entry_uuid: String!
         title: String
@@ -78,10 +93,13 @@ extend type Mutation @guard {
         images: [String!]
         status: String
     ): ProjectEntry! @field(resolver: "ProjectMutator@updateProjectEntry")
+    "Save a project entry bookmark"
     SaveProjectEntryBookmark(project_entry_id: Int!): ProjectEntryBookmark!
         @field(resolver: "ProjectMutator@saveProjectEntryBookmark")
+    "Save a project entry like"
     SaveProjectEntryLike(project_entry_id: Int!): ProjectEntryLike!
         @field(resolver: "ProjectMutator@saveProjectEntryLike")
+    "Save a project entry comment"
     SaveProjectEntryComment(
         project_entry_id: Int!
         content: String!
@@ -89,6 +107,7 @@ extend type Mutation @guard {
         replied_comment_id: Int
     ): ProjectEntryComment!
         @field(resolver: "ProjectMutator@saveProjectEntryComment")
+    "Delete a project milestone"
     DeleteProjectMilestone(uuid: String!): Boolean!
         @field(resolver: "ProjectMutator@deleteProjectMilestone")
 }

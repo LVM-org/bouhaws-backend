@@ -1,25 +1,33 @@
 # Auth Queries
 extend type Query @guard {
+    "Get the authenticated user"
     AuthUser: User @auth
 }
 
 # Auth mutations
 extend type Mutation {
+    "Sign up a new user"
     SignUp(email: String!, password: String!): User!
         @field(resolver: "AuthMutator@signUp")
+    "Sign in a user"
     SignIn(password: String!, email: String! @trim): AuthResponse!
         @field(resolver: "AuthMutator@signIn")
+    "Verify use email using OTP"
     VerifyEmailOTP(email: String!, otp: String!): User!
         @field(resolver: "AuthMutator@verifyEmailOTP")
+    "Resend verify OTP email to user"
     ResendVerifyEmail(user_uuid: String!): Boolean!
         @field(resolver: "AuthMutator@resendVerifyEmail")
+    "Send reset password email to user"
     SendResetPasswordEmail(email: String!): Boolean!
         @field(resolver: "AuthMutator@sendResetPasswordEmail")
+    "Update user password"
     UpdatePassword(
         user_uuid: String!
         password: String!
         old_password: String!
         otp: String
     ): Boolean! @field(resolver: "AuthMutator@updatePassword")
+    "Signout authenticated user"
     SignOut: Boolean! @field(resolver: "AuthMutator@signOut")
 }

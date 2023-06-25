@@ -1,10 +1,13 @@
 extend type Query @guard {
+    "Get the top 10 users"
     LeaderBoard: [User!] @field(resolver: "UserQuery@leaderboard")
+    "Get a single conversation"
     Conversation(uuid: String! @eq): Conversation @first
 }
 
 # User mutations
 extend type Mutation @guard {
+    "Update authenticated user profile"
     UpdateProfile(
         username: String
         name: String
@@ -16,25 +19,25 @@ extend type Mutation @guard {
         type: String
         push_notification_enabled: Boolean
     ): BouhawsClass! @field(resolver: "UserMutator@updateProfile")
-
+    "Start a new conversation"
     StartConversation(
-        # An array of the uuid of the other users in the conversation
+        "An array of the uuid of the other users in the conversation"
         associated_users_uuid: [String!]
     ): Conversation! @field(resolver: "UserMutator@startConversation")
-
+    "Joint an existing conversation"
     JoinConversation(
         conversation_uuid: String!
-        # An array of the uuid of the new users to be added to the conversation
+        "An array of the uuid of the new users to be added to the conversation"
         associated_users_uuid: [String!]
     ): Conversation! @field(resolver: "UserMutator@joinConversation")
-
+    "Save a conversation message"
     SaveConversationMessage(
-        # can be text, image, image_gallery
+        "can be text, image, image_gallery"
         type: String!
         conversation_id: Int!
         content: String!
-        # For single image message, send the uploaded image url, for image_gallery message, send an stringified array of the uploaded images url
+        "For single image message, send the uploaded image url, for image_gallery message, send an stringified array of the uploaded images url"
         media: String!
-    ): ConversationMessages!
+    ): ConversationMessage!
         @field(resolver: "UserMutator@saveConversationMessage")
 }
