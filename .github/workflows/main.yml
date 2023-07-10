@@ -16,7 +16,7 @@ jobs:
       with:
         node-version: '16.x'
     - run: npm install
-    - run: npm run production
+    - run: npm run build
     - name: Commit built assets
       run: |
         git config --local user.email "action@github.com"
