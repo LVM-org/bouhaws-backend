@@ -28,8 +28,8 @@ jobs:
     - name: Deploy to production
       uses: appleboy/ssh-action@master
       with:
-        username: github-action
+        username: root
         host: 146.190.170.255
         password: ${{ secrets.DEPLOY_PASSWORD }}
-        script: 'cd /var/www/bouhaws && ./server_deploy.sh'
+        script: 'cd /var/www/bouhaws && /var/www/bouhaws/server_deploy.sh'
 
