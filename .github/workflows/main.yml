@@ -31,5 +31,5 @@ jobs:
         username: root
         host: 146.190.170.255
         password: ${{ secrets.DEPLOY_PASSWORD }}
-        script: 'cd /var/www/bouhaws && /var/www/bouhaws/server_deploy.sh'
+        script: 'cd /var/www/bouhaws && sudo chmod u+x /var/www/bouhaws/server_deploy.sh && /var/www/bouhaws/server_deploy.sh'
 
