@@ -22,7 +22,7 @@ echo "Deploying application ..."
     php artisan optimize
 
     # Reload PHP to update opcache
-    echo "" | sudo -S service php-fpm reload
+    # echo "" | sudo -S service php-fpm reload
 # Exit maintenance mode
 php artisan up
 
