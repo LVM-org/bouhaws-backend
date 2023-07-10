@@ -30,6 +30,6 @@ jobs:
       with:
         username: github-action
         host: 146.190.170.255
-        password: ${{ secrets.SSH_PASSWORD }}
+        password: ${{ secrets.DEPLOY_PASSWORD }}
         script: 'cd /var/www/bouhaws && ./server_deploy.sh'
 
