@@ -34,7 +34,7 @@ final class AuthMutator
 
         $user = $this->authService->saveUser(new Request([
             'email' => $args['email'],
-            'name' => $args['name'],
+            'name' => isset($args['name']) ? $args['name'] : null,
             'password' => $args['password'],
             'otp' => $otp,
             'username' => isset($args['username']) ? $args['username'] : null,
