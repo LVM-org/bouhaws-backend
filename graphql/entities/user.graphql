@@ -18,7 +18,7 @@ extend type Mutation @guard {
         year_of_enrollment: String
         type: String
         push_notification_enabled: Boolean
-    ): BouhawsClass! @field(resolver: "UserMutator@updateProfile")
+    ): Profile! @field(resolver: "UserMutator@updateProfile")
     "Start a new conversation"
     StartConversation(
         "An array of the uuid of the other users in the conversation"

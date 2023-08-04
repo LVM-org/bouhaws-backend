@@ -62,6 +62,7 @@ extend type Mutation @guard {
         total_points: String
         project_category_id: Int
         status: String
+        project_uuid: String!
     ): Project! @field(resolver: "ProjectMutator@updateProject")
     "Create a new project milestone"
     CreateProjectMilestone(
