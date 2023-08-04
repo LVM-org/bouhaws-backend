@@ -3,6 +3,9 @@ extend type Query @guard {
     LeaderBoard: [User!] @field(resolver: "UserQuery@leaderboard")
     "Get a single conversation"
     Conversation(uuid: String! @eq): Conversation @first
+    "Get messages for a particular conversations"
+    ConversationMessages(conversation_id: String! @eq): [ConversationMessage!]
+        @paginate
 }
 
 # User mutations
