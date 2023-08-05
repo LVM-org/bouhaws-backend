@@ -33,7 +33,7 @@ class Project extends Model
 
     public function category()
     {
-        return $this->hasOne(ProjectCategory::class);
+        return $this->belongsTo(ProjectCategory::class, 'project_category_id', 'id');
     }
 
     public function entries()
