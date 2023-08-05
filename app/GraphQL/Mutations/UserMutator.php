@@ -44,7 +44,10 @@ final class UserMutator
         $mediaUrl = null;
 
         if (isset($args['photo_url'])) {
-            // save file to cloud
+            $userService = new UserService();
+            $request = new Request();
+            $request->files->set('attachment', $args['photo_url']);
+            $mediaUrl = $userService->uploadFile($request, false);
         }
 
         $this->userService->updateProfile(new Request([
