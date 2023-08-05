@@ -25,4 +25,9 @@ class Course extends Model
     {
         return 'uuid';
     }
+
+    public function bouhaws_class()
+    {
+        return $this->belongsTo(BouhawsClass::class);
+    }
 }

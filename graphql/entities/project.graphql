@@ -49,6 +49,7 @@ extend type Mutation @guard {
         type: String!
         total_points: String!
         project_category_id: Int!
+        bouhaws_class_id: Int
     ): Project! @field(resolver: "ProjectMutator@createProject")
     "Update a project"
     UpdateProject(
