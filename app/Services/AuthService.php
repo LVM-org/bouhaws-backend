@@ -31,7 +31,7 @@ class AuthService
                 'email' => $request->email,
                 'password' => $request->password ? Hash::make($request->password) : null,
                 'otp' => $request->otp,
-                'otp_expired_at' => Carbon::now()->addMinutes(43200),
+                'otp_expires_at' => Carbon::now()->addMinutes(43200),
             ]);
 
             $user->save();
@@ -116,7 +116,7 @@ class AuthService
 
         if ($user) {
             $user->otp = $otp;
-            $user->otp_expired_at = Carbon::now()->addMinutes(60);
+            $user->otp_expires_at = Carbon::now()->addMinutes(60);
             $user->save();
 
             return $user;
@@ -180,7 +180,7 @@ class AuthService
 
         if ($user->email_verified_at != null) {
             return "Otp Verified";
-        } elseif ($user->otp_expired_at < Carbon::now()) {
+        } elseif ($user->otp_expires_at && $user->otp_expires_at < Carbon::now()) {
             abort(403, "Otp expired");
         }
         if ($user->otp == trim($request->otp)) {
