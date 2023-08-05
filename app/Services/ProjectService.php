@@ -211,45 +211,4 @@ class ProjectService
         return true;
     }
 
-    public function uploadFile($request, $resizeImg = true)
-    {
-
-        $fileName = time() . '_' . $request->file('attachment')->getClientOriginalName();
-        $filePath = $request->file('file')->storeAs('uploads', $fileName, 'public');
-        $filePath = '/storage/' . $filePath;
-
-        return asset($filePath);
-
-        // $allowedMimeTypes = ['image/jpeg', 'image/gif', 'image/png'];
-        // $contentType = $request->file('attachment')->getClientMimeType();
-
-        // $photo = null;
-        // if (!in_array($contentType, $allowedMimeTypes)) {
-        //     $photo = Storage::disk('do_spaces')->putFile('main', $request->file('attachment'), 'public');
-        // } else {
-        //     $data = getimagesize($request->file('attachment'));
-        //     $width = $data[0];
-        //     $height = $data[1];
-
-        //     $image = Image::make($request->file('attachment'))->resize(640, 400);
-
-        //     if ($resizeImg == false) {
-        //         $image = Image::make($request->file('attachment'))->resize($width, $height);
-        //     }
-
-        //     $extension = $request->file('attachment')->getClientOriginalExtension();
-
-        //     $extension = $extension ? $extension : 'jpg';
-
-        //     $fileName = Str::random(30) . '.' . $extension;
-
-        //     $image = $image->stream();
-
-        //     $photo = Storage::disk('do_spaces')->put('main/' . $fileName, $image->__toString(), 'public');
-
-        //     return env('DO_SPACE_URL', "https://roof.nyc3.digitaloceanspaces.com") . '/' . "main/" . $fileName;
-        // }
-
-        // return Storage::disk('do_spaces')->url($photo);
-    }
 }
