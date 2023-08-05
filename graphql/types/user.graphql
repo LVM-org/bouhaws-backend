@@ -7,7 +7,7 @@ type User {
     uuid: String!
 
     "Non-unique name."
-    name: String!
+    name: String
 
     "Unique email address."
     email: String!
