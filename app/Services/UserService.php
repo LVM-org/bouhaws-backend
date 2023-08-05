@@ -143,7 +143,7 @@ class UserService
     {
 
         $fileName = time() . '_' . $request->file('attachment')->getClientOriginalName();
-        $filePath = $request->file('file')->storeAs('uploads', $fileName, 'public');
+        $filePath = $request->file('attachment')->storeAs('uploads', $fileName, 'public');
         $filePath = '/storage/' . $filePath;
 
         return asset($filePath);
