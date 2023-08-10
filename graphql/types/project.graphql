@@ -34,7 +34,7 @@ type Project {
     type: String!
 
     "The project category"
-    category: ProjectCategory! @belongsTo
+    category: ProjectCategory @belongsTo
 
     "The project entries"
     entries: [ProjectEntry!] @hasMany
