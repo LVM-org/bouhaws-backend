@@ -3,7 +3,7 @@ type AuthResponse {
     user: User!
 }
 
-type EntryImage {
+input EntryImage {
     milestone: String!
     url: String!
 }
