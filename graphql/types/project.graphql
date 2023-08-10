@@ -39,6 +39,9 @@ type Project {
     "The project category"
     category: ProjectCategory! @belongsTo
 
+    "The current user entry"
+    user_entry: ProjectEntry
+
     "The project entries"
     entries: [ProjectEntry!] @hasMany
 
