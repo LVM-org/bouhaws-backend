@@ -33,9 +33,6 @@ type Project {
     "The project type. Can be 'event', 'challenge', 'course'"
     type: String!
 
-    "The project total points"
-    total_points: Float!
-
     "The project category"
     category: ProjectCategory! @belongsTo
 
