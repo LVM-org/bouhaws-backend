@@ -125,7 +125,7 @@ final class ProjectMutator
             'project_id' => $args['project_id'],
             'title' => $args['title'],
             'description' => $args['description'],
-            'images' => json_encode([]),
+            'images' => isset($args['images']) ? json_encode($args['images']) : json_encode([]),
         ]));
     }
 
