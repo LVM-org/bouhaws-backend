@@ -28,6 +28,43 @@ type BouhawsClass {
     updated_at: DateTime!
 }
 
+type StudentProfile {
+    "Unique primary key."
+    id: ID!
+
+    "Unique UUID"
+    uuid: String!
+
+    "The user profile photo"
+    photo_url: String
+}
+
+type StudentData {
+    "Unique primary key."
+    id: ID!
+
+    "Unique UUID"
+    uuid: String!
+
+    "Non-unique name."
+    name: String
+
+    "Unique email address."
+    email: String!
+
+    "Unique username"
+    username: String
+
+    "User profile"
+    profile: StudentProfile!
+
+    "When the account was created."
+    created_at: DateTime!
+
+    "When the account was last updated."
+    updated_at: DateTime!
+}
+
 "A single course"
 type Course {
     "Unique primary key."
