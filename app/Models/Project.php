@@ -44,11 +44,12 @@ class Project extends Model
 
     public function user_entry()
     {
-        if (Auth::user()) {
-            return ProjectEntry::where('project_id', $this->id)->where('user_id', Auth::user()->id)->first();
-        } else {
-            return null;
-        }
+        // if (Auth::user()) {
+        //     return ProjectEntry::where('project_id', $this->id)->where('user_id', Auth::user()->id)->first();
+        // } else {
+        //     return null;
+        // }
+        return ProjectEntry::where('project_id', $this->id)->where('user_id', Auth::user()->id)->first();
 
     }
 
