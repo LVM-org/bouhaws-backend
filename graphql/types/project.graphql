@@ -119,6 +119,9 @@ type ProjectEntry {
     "The project itself"
     project: Project! @belongsTo
 
+    "The project category"
+    category: ProjectCategory
+
     "The current project milestone for the entry"
     current_milestone_index: Int!
 

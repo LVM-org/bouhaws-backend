@@ -88,6 +88,7 @@ extend type Mutation @guard {
         title: String!
         description: String!
         images: [EntryImage!]
+        project_category_id: String
     ): ProjectEntry! @field(resolver: "ProjectMutator@joinProject")
     "Update a project entry"
     UpdateProjectEntry(

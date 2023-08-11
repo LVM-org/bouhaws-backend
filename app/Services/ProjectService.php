@@ -151,6 +151,7 @@ class ProjectService
                 'description' => $request->description,
                 'images' => $request->images,
                 'status' => 'draft',
+                'project_category_id' => $request->project_category_id,
             ]);
 
             $projectEntry->save();

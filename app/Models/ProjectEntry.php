@@ -11,6 +11,7 @@ class ProjectEntry extends Model
 
     protected $appends = [
         'images',
+        'category',
     ];
 
     /**
@@ -58,6 +59,15 @@ class ProjectEntry extends Model
     public function comments()
     {
         return $this->hasMany(ProjectEntryComment::class);
+    }
+
+    public function getCategoryAttribute()
+    {
+        if ($this->project_category_id) {
+            return ProjectCategory::where('id', $this->project_category_id)->first();
+        } else {
+            return ProjectCategory::where('id', $this->project->project_category_id)->first();
+        }
     }
 
 }
