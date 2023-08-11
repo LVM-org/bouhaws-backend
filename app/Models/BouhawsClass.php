@@ -35,4 +35,11 @@ class BouhawsClass extends Model
     {
         return $this->hasMany(Project::class, 'bouhaws_class_id', 'id');
     }
+
+    public function students()
+    {
+        $allEntriesUsers = ProjectEntry::whereIn('project_id', $this->projects()->pluck('id')->toArray())->pluck('user_id')->toArray();
+
+        return User::whereIn('id', $allEntriesUsers)->with('profile')->get();
+    }
 }
