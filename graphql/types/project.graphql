@@ -122,6 +122,9 @@ type ProjectEntry {
     "The project category"
     category: ProjectCategory
 
+    "The project category id"
+    project_category_id: Int
+
     "The current project milestone for the entry"
     current_milestone_index: Int!
 

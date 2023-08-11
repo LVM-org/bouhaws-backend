@@ -2,6 +2,7 @@
 extend type Query @guard {
     "Get many projects"
     GetProjects(
+        where: _ @whereConditions(columns: ["type", "title", "description"])
         orderBy: _ @orderBy(columns: ["created_at"])
         hasUser: _ @whereHasConditions(columns: ["uuid"])
         hasCategory: _ @whereHasConditions(columns: ["uuid", "title"])
@@ -16,6 +17,15 @@ extend type Query @guard {
     ProjectCategory(uuid: String! @eq): ProjectCategory @first
     "Get many project entries"
     GetProjectEntries(
+        where: _
+            @whereConditions(
+                columns: [
+                    "title"
+                    "status"
+                    "description"
+                    "project_category_id"
+                ]
+            )
         orderBy: _ @orderBy(columns: ["created_at"])
         hasUser: _ @whereHasConditions(columns: ["uuid"])
         hasProject: _
