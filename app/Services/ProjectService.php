@@ -58,6 +58,7 @@ class ProjectService
                     'total_points' => $request->total_points ? $request->total_points : $project->total_points,
                     'project_category_id' => $request->project_category_id ? $request->project_category_id : $project->project_category_id,
                     'status' => $request->status ? $request->status : $project->status,
+                    'bouhaws_class_id' => $request->bouhaws_class_id ? $request->bouhaws_class_id : $project->bouhaws_class_id,
                 ]);
 
             } else {
@@ -79,6 +80,7 @@ class ProjectService
                 'type' => $request->type,
                 'total_points' => $request->total_points,
                 'project_category_id' => $request->project_category_id,
+                'bouhaws_class_id' => $request->bouhaws_class_id,
             ]);
 
             $project->save();
