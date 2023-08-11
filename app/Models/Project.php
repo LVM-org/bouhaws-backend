@@ -48,6 +48,6 @@ class Project extends Model
 
     public function bouhawsclass()
     {
-        return $this->belongsTo(BouhawsClass::class);
+        return $this->belongsTo(BouhawsClass::class, 'bouhaws_class_id', 'id');
     }
 }
