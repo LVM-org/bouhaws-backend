@@ -121,7 +121,7 @@ type ProjectEntry {
     description: String!
 
     "The entry images. This is an array of all the images_cdn_url"
-    images: [EntryImage!]
+    images: [EntryImageType!]
 
     "The status of the entry. Default is 'active'"
     status: String
@@ -193,7 +193,7 @@ type ProjectEntryComment {
     updated_at: DateTime!
 }
 
-type EntryImage {
+type EntryImageType {
     milestone: String!
     url: String!
 }
