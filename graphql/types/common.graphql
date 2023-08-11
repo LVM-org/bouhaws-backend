@@ -16,7 +16,7 @@ type BouhawsClass {
     projects: [Project!] @hasMany
 
     "All students attached to a class"
-    students: [User!]
+    students: [User]
 
     "The class description"
     description: String
