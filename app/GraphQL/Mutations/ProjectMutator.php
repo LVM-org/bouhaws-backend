@@ -95,6 +95,7 @@ final class ProjectMutator
             'total_points' => isset($args['total_points']) ? $args['total_points'] : null,
             'project_category_id' => isset($args['project_category_id']) ? $args['project_category_id'] : null,
             'status' => isset($args['status']) ? $args['status'] : null,
+            'bouhaws_class_id' => isset($args['bouhaws_class_id']) ? $args['bouhaws_class_id'] : null,
         ]));
     }
 
