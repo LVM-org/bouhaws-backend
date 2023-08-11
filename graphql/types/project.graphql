@@ -117,7 +117,7 @@ type ProjectEntry {
     user: User! @belongsTo
 
     "The project itself"
-    project: Project! @belongsTo
+    project: Project @belongsTo
 
     "The project category"
     category: ProjectCategory
