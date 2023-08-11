@@ -45,4 +45,9 @@ class Project extends Model
     {
         return $this->hasMany(ProjectMilestone::class);
     }
+
+    public function bouhawsclass()
+    {
+        return $this->belongsTo(BouhawsClass::class);
+    }
 }

@@ -50,6 +50,9 @@ type Project {
     "The project milestones"
     milestones: [ProjectMilestone!] @hasMany
 
+    "The project class if it is not a challenge"
+    bouhawsclass: BouhawsClass @belongsTo
+
     "When the project was created."
     created_at: DateTime!
 
