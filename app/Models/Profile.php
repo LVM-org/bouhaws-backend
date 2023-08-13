@@ -28,6 +28,11 @@ class Profile extends Model
         return 'uuid';
     }
 
+    public function user()
+    {
+        return $this->belongsTo(Profile::class);
+    }
+
     public function getEnrolledCoursesAttribute()
     {
         $enrolled_courses_uuid = $this->enrolled_courses_uuid ? json_decode($this->enrolled_courses_uuid) : [];

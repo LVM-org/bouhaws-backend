@@ -72,6 +72,9 @@ type Profile {
     "The user account type. Can be 'student' or 'teacher'"
     type: String!
 
+    "The attached user"
+    user: User! @belongsTo
+
     "An array of the user's currently enrolled course"
     enrolled_courses: [Course!]
 
