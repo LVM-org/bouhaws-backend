@@ -68,6 +68,7 @@ final class UserMutator
         return $this->userService->createOrUpdateConversation(new Request([
             'user_uuid' => Auth::user()->uuid,
             'associated_users_uuid' => $args['associated_users_uuid'],
+            'user_id' => Auth::user()->id,
         ]));
     }
 
