@@ -1,6 +1,6 @@
 extend type Query @guard {
     "Get the top 10 users"
-    LeaderBoard: [User!] @field(resolver: "UserQuery@leaderboard")
+    LeaderBoard: [Profile!] @field(resolver: "UserQuery@leaderboard")
     "Get a single conversation"
     Conversation(uuid: String! @eq): Conversation @first
     "Get messages for a particular conversations"
