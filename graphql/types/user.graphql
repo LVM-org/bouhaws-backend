@@ -105,6 +105,9 @@ type Conversation {
     "Other users that are part of the conversation"
     associated_users: [User!]
 
+    "Other user data"
+    other_member: User
+
     "When the conversation was created."
     created_at: DateTime!
 

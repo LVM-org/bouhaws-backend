@@ -16,7 +16,7 @@ class Conversation extends Model
      */
     protected $guarded = [];
 
-    protected $appends = ['associated_users'];
+    protected $appends = ['associated_users', 'other_member'];
 
     /**
      * Get the route key for the liquidation.
@@ -38,5 +38,10 @@ class Conversation extends Model
         $associated_users_uuid = $this->associated_users_uuid ? json_decode($this->associated_users_uuid) : [];
 
         return User::whereIn('uuid', $associated_users_uuid)->get();
+    }
+
+    public function getOtherMemberAttribute()
+    {
+        return ConversationMember::where('user_uuid', '!=', $this->user->uuid)->user()->first();
     }
 }
