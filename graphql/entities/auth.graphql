@@ -1,7 +1,7 @@
 # Auth Queries
 extend type Query @guard {
     "Get the authenticated user"
-    AuthUser: User @auth
+    AuthUser: User @field(resolver: "UserQuery@authUser")
 }
 
 # Auth mutations
