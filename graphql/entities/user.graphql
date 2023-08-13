@@ -6,6 +6,7 @@ extend type Query @guard {
     "Get messages for a particular conversations"
     ConversationMessages(conversation_id: String! @eq): [ConversationMessage!]
         @paginate
+    SingleUser(uuid: String! @eq): User @first
 }
 
 # User mutations
