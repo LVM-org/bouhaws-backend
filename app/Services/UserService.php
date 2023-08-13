@@ -95,6 +95,8 @@ class UserService
                 'associated_users_uuid' => json_encode($request->associated_users_uuid),
             ]);
 
+            $conversation->save();
+
             $user = User::where('id', $request->user_id)->first();
 
             if ($user) {
@@ -115,8 +117,6 @@ class UserService
 
                 $conversationMember->save();
             }
-
-            $conversation->save();
 
             return $conversation;
 
