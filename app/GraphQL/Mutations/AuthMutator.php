@@ -43,6 +43,7 @@ final class AuthMutator
         // create profile
         $this->userService->createOrUpdateProfile(new Request([
             'user_id' => $user->id,
+            'type' => $args['type'],
         ]));
 
         // send verify email otp

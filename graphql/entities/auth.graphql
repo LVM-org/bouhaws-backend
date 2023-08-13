@@ -7,8 +7,12 @@ extend type Query @guard {
 # Auth mutations
 extend type Mutation {
     "Sign up a new user"
-    SignUp(email: String!, password: String!, username: String!): User!
-        @field(resolver: "AuthMutator@signUp")
+    SignUp(
+        email: String!
+        password: String!
+        username: String!
+        type: String!
+    ): User! @field(resolver: "AuthMutator@signUp")
     "Sign in a user"
     SignIn(password: String!, email: String! @trim): AuthResponse!
         @field(resolver: "AuthMutator@signIn")

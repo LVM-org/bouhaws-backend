@@ -17,7 +17,7 @@ class UserService
 
         if ($userProfile == null) {
             $userProfile = Profile::create([
-                'type' => 'student',
+                'type' => $request->type,
                 'user_id' => $request->user_id,
             ]);
 
@@ -29,7 +29,6 @@ class UserService
                 'school' => $request->school ? $request->school : $userProfile->school,
                 'student_number' => $request->student_number ? $request->student_number : $userProfile->student_number,
                 'year_of_enrollment' => $request->year_of_enrollment ? $request->year_of_enrollment : $userProfile->year_of_enrollment,
-                'type' => $request->type ? $request->type : $userProfile->type,
                 'enrolled_courses_uuid' => $request->enrolled_courses_uuid ? $request->enrolled_courses_uuid : $userProfile->enrolled_courses_uuid,
                 'enrolled_classes_uuid' => $request->enrolled_classes_uuid ? $request->enrolled_classes_uuid : $userProfile->enrolled_classes_uuid,
                 'push_notification_enabled' => $request->push_notification_enabled != null ? $request->push_notification_enabled : $userProfile->push_notification_enabled,
