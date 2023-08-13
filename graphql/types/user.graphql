@@ -27,6 +27,12 @@ type User {
     "User project entries"
     project_entries: [ProjectEntry!] @hasMany
 
+    "User projects. Mainly for non-student user types"
+    projects: [Project!] @hasMany
+
+    "User classes"
+    my_classes: [BouhawsClass!]
+
     "When the email was verified."
     email_verified_at: DateTime
 

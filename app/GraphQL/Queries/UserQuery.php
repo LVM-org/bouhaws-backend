@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Auth;
 
 final class UserQuery
 {
-
     public function authUser($_, array $args)
     {
         if (Auth::user()) {
@@ -29,7 +28,7 @@ final class UserQuery
 
     public function leaderboard($_, array $args)
     {
-        return Profile::orderBy('points', 'desc')->take(10)->get();
+        return Profile::orderBy('points', 'desc')->where('type', 'student')->take(10)->get();
     }
 
     public function userWallet()
