@@ -16,7 +16,7 @@ class Conversation extends Model
      */
     protected $guarded = [];
 
-    protected $appends = ['associated_users', 'other_member'];
+    protected $appends = ['associated_users', 'other_member', 'last_message'];
 
     /**
      * Get the route key for the liquidation.
@@ -43,5 +43,10 @@ class Conversation extends Model
     public function getOtherMemberAttribute()
     {
         return ConversationMember::where('user_uuid', '!=', $this->user->uuid)->user()->first();
+    }
+
+    public function getLastMessageAttribute()
+    {
+        return ConversationMessage::where('conversation_id', $this->id)->orderBy('created_at', 'desc')->first();
     }
 }

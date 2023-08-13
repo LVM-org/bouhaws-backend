@@ -108,6 +108,9 @@ type Conversation {
     "Other user data"
     other_member: User
 
+    "The last massage"
+    last_message: ConversationMessage
+
     "When the conversation was created."
     created_at: DateTime!
 
