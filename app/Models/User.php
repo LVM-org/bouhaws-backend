@@ -80,7 +80,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         return Conversation::whereIn('uuid', $conversationMemberships)->get();
     }
 
-    public function getMyClassesAttributes()
+    public function getMyClassesAttribute()
     {
         if ($this->profile->type == 'student') {
             $allProjectsId = $this->project_entries()->pluck('project_id')->toArray();
