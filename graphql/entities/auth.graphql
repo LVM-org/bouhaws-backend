@@ -1,5 +1,5 @@
 # Auth Queries
-extend type Query @guard {
+extend type Query {
     "Get the authenticated user"
     AuthUser: User @field(resolver: "UserQuery@authUser")
 }
