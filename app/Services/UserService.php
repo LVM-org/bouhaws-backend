@@ -8,6 +8,7 @@ use App\Models\ConversationMember;
 use App\Models\ConversationMessage;
 use App\Models\Profile;
 use App\Models\User;
+use Nuwave\Lighthouse\Execution\Utils\Subscription;
 
 class UserService
 {
@@ -78,6 +79,10 @@ class UserService
                         ]);
 
                         $conversationMember->save();
+
+                        $conversation->user_uuid = $user_uuid;
+
+                        Subscription::broadcast('conversationMembership', $conversation);
                     }
 
                 }
@@ -116,6 +121,11 @@ class UserService
                 ]);
 
                 $conversationMember->save();
+
+                $conversation->user_uuid = $user_uuid;
+
+                Subscription::broadcast('conversationMembership', $conversation);
+
             }
 
             return $conversation;
@@ -134,6 +144,12 @@ class UserService
         ]);
 
         $message->save();
+
+        $conversation = Conversation::where('id', $request->conversation_id)->first();
+
+        $message->conversation_uuid = $conversation->uuid;
+
+        Subscription::broadcast('conversationMessageCreated', $message);
 
         return $message;
     }

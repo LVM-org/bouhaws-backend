@@ -45,3 +45,12 @@ extend type Mutation @guard {
     ): ConversationMessage!
         @field(resolver: "UserMutator@saveConversationMessage")
 }
+
+extend type Subscription @guard {
+    "Subscribe to user conversation messages"
+    conversationMessageCreated(
+        conversationList: [String!]!
+    ): ConversationMessage
+    "Subscribe to user conversation membership"
+    conversationMembership(userUuid: String!): Conversation
+}
