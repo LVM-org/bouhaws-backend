@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Conversation extends Model
 {
@@ -42,7 +43,8 @@ class Conversation extends Model
 
     public function getOtherMemberAttribute()
     {
-        return ConversationMember::where('user_uuid', '!=', $this->user->uuid)->first()->user()->first();
+        $authUser = Auth::user();
+        return ConversationMember::where('user_uuid', '!=', $authUser->uuid)->first()->user()->first();
     }
 
     public function getLastMessageAttribute()
