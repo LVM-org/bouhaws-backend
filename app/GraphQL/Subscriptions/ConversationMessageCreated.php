@@ -3,7 +3,6 @@
 namespace App\GraphQL\Subscriptions;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Nuwave\Lighthouse\Schema\Types\GraphQLSubscription;
 use Nuwave\Lighthouse\Subscriptions\Subscriber;
 
@@ -23,8 +22,6 @@ final class ConversationMessageCreated extends GraphQLSubscription
     public function filter(Subscriber $subscriber, mixed $root): bool
     {
         $args = $subscriber->args;
-
-        Log::debug($root);
 
         return in_array($root->conversation_uuid, $args['conversationList']);
     }
