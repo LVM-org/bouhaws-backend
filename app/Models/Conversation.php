@@ -44,7 +44,7 @@ class Conversation extends Model
     public function getOtherMemberAttribute()
     {
         $authUser = Auth::user();
-        return ConversationMember::where('user_uuid', '!=', $authUser->uuid)->first()->user;
+        return ConversationMember::where('conversation_uuid', $this->uuid)->where('user_uuid', '!=', $authUser->uuid)->first()->user;
     }
 
     public function getLastMessageAttribute()
