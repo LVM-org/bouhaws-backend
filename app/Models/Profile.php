@@ -16,7 +16,7 @@ class Profile extends Model
      */
     protected $guarded = [];
 
-    protected $appends = ['enrolled_courses', 'enrolled_classes'];
+    protected $appends = ['enrolled_courses', 'enrolled_classes', 'photo_url'];
 
     /**
      * Get the route key for the liquidation.
@@ -26,6 +26,24 @@ class Profile extends Model
     public function getRouteKeyName()
     {
         return 'uuid';
+    }
+
+    public function getPhotoUrlAttribute()
+    {
+        if ($this->attributes['photo_url']) {
+            return $this->attributes['photo_url'];
+        } else {
+            $avatarAvailable = [1, 2, 3, 4, 5, 6, 7, 8];
+            $randomKey = array_rand($avatarAvailable);
+
+            $profilePhotoUrl = "/images/avatars/avatar-{$randomKey}.svg";
+
+            $this->update([
+                'photo_url' => $profilePhotoUrl,
+            ]);
+
+            return $profilePhotoUrl;
+        }
     }
 
     public function user()
