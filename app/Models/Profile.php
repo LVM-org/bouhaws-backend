@@ -36,7 +36,7 @@ class Profile extends Model
             $avatarAvailable = [1, 2, 3, 4, 5, 6, 7, 8];
             $randomKey = array_rand($avatarAvailable);
 
-            $profilePhotoUrl = "/images/avatars/avatar-{$randomKey}.svg";
+            $profilePhotoUrl = "/images/avatars/avatar-{$avatarAvailable[$randomKey]}.svg";
 
             $this->update([
                 'photo_url' => $profilePhotoUrl,
