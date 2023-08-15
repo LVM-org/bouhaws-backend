@@ -23,6 +23,8 @@ final class ConversationMessageCreated extends GraphQLSubscription
     {
         $args = $subscriber->args;
 
+        return true;
+
         return in_array($root->conversation_uuid, $args['conversationList']);
     }
 }
