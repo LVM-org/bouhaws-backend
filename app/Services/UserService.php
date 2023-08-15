@@ -149,7 +149,7 @@ class UserService
 
         $message->conversation_uuid = $conversation->uuid;
 
-        Subscription::broadcast('conversationMessageCreated', $message);
+        Subscription::broadcast('conversationMessageCreated', $message, false);
 
         return $message;
     }
