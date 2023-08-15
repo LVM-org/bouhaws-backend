@@ -42,7 +42,7 @@ class Conversation extends Model
 
     public function getOtherMemberAttribute()
     {
-        return ConversationMember::where('user_uuid', '!=', $this->user->uuid)->first()->user();
+        return ConversationMember::where('user_uuid', '!=', $this->user->uuid)->first()->user()->first();
     }
 
     public function getLastMessageAttribute()
