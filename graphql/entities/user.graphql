@@ -23,6 +23,7 @@ extend type Mutation @guard {
         student_number: String
         year_of_enrollment: String
         type: String
+        phone_number: String
         push_notification_enabled: Boolean
     ): Profile! @field(resolver: "UserMutator@updateProfile")
     "Start a new conversation"
