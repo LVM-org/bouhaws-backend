@@ -10,6 +10,13 @@ class Notification extends Model
     use HasFactory, HasUuid;
 
     /**
+     * The attributes that are not mass assignable.
+     *
+     * @var array
+     */
+    protected $guarded = [];
+
+    /**
      * Get the route key for the liquidation.
      *
      * @return string
