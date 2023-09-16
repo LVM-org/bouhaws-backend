@@ -174,12 +174,20 @@ class ProjectService
 
     public function saveProjectEntryLike($request)
     {
-        $projectEntryLike = ProjectEntryLike::create([
-            'user_id' => $request->user_id,
-            'project_entry_id' => $request->project_entry_id,
-        ]);
+        $projectLike = ProjectEntryLike::where('user_id', $request->user_id)->where('project_entry_id', $request->project_entry_id)->first();
 
-        $projectEntryLike->save();
+        if ($projectLike) {
+            $projectLike = ProjectEntryLike::where('user_id', $request->user_id)->where('project_entry_id', $request->project_entry_id);
+
+            $projectLike->delete();
+        } else {
+            $projectEntryLike = ProjectEntryLike::create([
+                'user_id' => $request->user_id,
+                'project_entry_id' => $request->project_entry_id,
+            ]);
+
+            $projectEntryLike->save();
+        }
 
         return $projectEntryLike;
     }
