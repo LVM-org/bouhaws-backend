@@ -61,6 +61,7 @@ final class UserMutator
             'year_of_enrollment' => isset($args['year_of_enrollment']) ? $args['year_of_enrollment'] : null,
             'type' => isset($args['type']) ? $args['type'] : null,
             'push_notification_enabled' => isset($args['push_notification_enabled']) ? $args['push_notification_enabled'] : null,
+            'user_id' => Auth::user()->id,
         ]));
 
         return Profile::where('user_id', Auth::user()->id)->first();
