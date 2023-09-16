@@ -29,6 +29,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'email_verified_at',
         'otp',
         'otp_expires_at',
+        'phone_number',
     ];
 
     /**
