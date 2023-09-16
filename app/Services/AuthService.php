@@ -161,7 +161,6 @@ class AuthService
         if ($user) {
             $user->update([
                 'name' => $request->name ? $request->name : $user->name,
-                'phone_number' => $request->phone_number ? $request->phone_number : $user->phone_number,
             ]);
 
             return $user;
