@@ -166,7 +166,7 @@ class ProjectService
                 "type" => 'activity',
                 "model_type" => 'project_entry',
                 'user_id' => $projectEntry->project->user_id,
-                "model_type_id" => $projectEntry->project->uuid,
+                "model_type_id" => $projectEntry->uuid,
             ]);
 
             return $projectEntry;
@@ -210,7 +210,7 @@ class ProjectService
                 "type" => 'activity',
                 "model_type" => 'project_entry_like',
                 'user_id' => $projectLike->project_entry->user_id,
-                "model_type_id" => $projectLike->project_entry->uuid,
+                "model_type_id" => $projectLike->uuid,
             ]);
         }
 
@@ -238,7 +238,7 @@ class ProjectService
             "type" => 'activity',
             "model_type" => 'project_entry_comment',
             'user_id' => $projectEntrycomment->project_entry->user_id,
-            "model_type_id" => $projectEntrycomment->project_entry->uuid,
+            "model_type_id" => $projectEntrycomment->uuid,
         ]);
 
         return $projectEntrycomment;
