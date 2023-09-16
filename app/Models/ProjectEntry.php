@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class ProjectEntry extends Model
 {
@@ -12,6 +13,7 @@ class ProjectEntry extends Model
     protected $appends = [
         'images',
         'category',
+        'liked',
     ];
 
     /**
@@ -68,6 +70,13 @@ class ProjectEntry extends Model
         } else {
             return ProjectCategory::where('id', $this->project->project_category_id)->first();
         }
+    }
+
+    public function getLikedAttribute()
+    {
+        $userLike = ProjectEntryLike::where('user_id', Auth::user()->id)->where('project_entry_id', $this->id)->first();
+
+        return $userLike ? true : false;
     }
 
 }
