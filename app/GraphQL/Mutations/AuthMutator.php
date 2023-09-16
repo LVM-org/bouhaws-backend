@@ -8,6 +8,7 @@ use App\Services\AuthService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 final class AuthMutator
 {
@@ -32,12 +33,23 @@ final class AuthMutator
     {
         $otp = mt_rand(20000, 90000);
 
+        // set up user name
+        $guessedUsername = explode("@", $args['email']);
+
+        $guessedUsername = $guessedUsername[0];
+
+        $userWithUsername = User::where('username', $guessedUsername)->first();
+
+        if ($userWithUsername) {
+            $guessedUsername = $guessedUsername . Str::random(4);
+        }
+
         $user = $this->authService->saveUser(new Request([
             'email' => $args['email'],
-            'name' => isset($args['name']) ? $args['name'] : null,
+            'name' => isset($args['username']) ? $args['username'] : null,
             'password' => $args['password'],
             'otp' => $otp,
-            'username' => isset($args['username']) ? $args['username'] : null,
+            'username' => $guessedUsername,
         ]));
 
         // create profile
