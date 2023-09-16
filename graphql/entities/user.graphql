@@ -9,6 +9,12 @@ extend type Query @guard {
     SingleUser(uuid: String! @eq): User @first
     MyNotifications: [Notification!]!
         @field(resolver: "UserQuery@myNotifications")
+    "Get transactions"
+    GetTransactions(
+        where: _ @whereConditions(columns: ["created_at"])
+        orderBy: _ @orderBy(columns: ["created_at"])
+        hasUser: _ @whereHasConditions(columns: ["uuid"])
+    ): [Transaction!]! @paginate
 }
 
 # User mutations
