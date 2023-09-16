@@ -7,6 +7,8 @@ extend type Query @guard {
     ConversationMessages(conversation_id: String! @eq): [ConversationMessage!]
         @paginate
     SingleUser(uuid: String! @eq): User @first
+    MyNotifications: [Notification!]!
+        @field(resolver: "UserQuery@myNotifications")
 }
 
 # User mutations
@@ -44,6 +46,10 @@ extend type Mutation @guard {
         media: String!
     ): ConversationMessage!
         @field(resolver: "UserMutator@saveConversationMessage")
+    MarkNotificationsAsRead(
+        "An array of the uuid of the notifications to be marked as read"
+        notification_uuids: [String!]!
+    ): Boolean! @field(resolver: "UserMutator@markNotificationsAsRead")
 }
 
 extend type Subscription @guard {

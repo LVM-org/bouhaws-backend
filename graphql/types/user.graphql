@@ -147,3 +147,58 @@ type ConversationMessage {
     "When the conversation message was last updated."
     updated_at: DateTime!
 }
+
+"Notification type"
+enum NotificationType {
+    ACTIVITY @enum(value: "activity")
+    SYSTEM @enum(value: "system")
+}
+
+"Notification model type"
+enum NotificationModelType {
+    PROJECT_ENTRY @enum(value: "project_entry")
+    PROJECT_ENTRY_COMMENT @enum(value: "project_entry_comment")
+    PROJECT_ENTRY_LIKE @enum(value: "project_entry_like")
+}
+
+"A user notfication"
+type Notification {
+    "Unique primary key."
+    id: ID!
+
+    "Unique UUID"
+    uuid: String!
+
+    "The notification title"
+    title: String!
+
+    "The notification body"
+    body: String!
+
+    "The notification type"
+    type: NotificationType!
+
+    "The notification model type"
+    model_type: NotificationModelType!
+
+    "The notification read status"
+    read: Boolean!
+
+    "The notifcation extra url"
+    extra_url: String
+
+    "The attached project entry"
+    project_entry: ProjectEntry
+
+    "The attached project entry comment"
+    project_entry_comment: ProjectEntryComment
+
+    "The attached project entry like"
+    project_entry_like: ProjectEntryLike
+
+    "When the conversation message was created."
+    created_at: DateTime!
+
+    "When the conversation message was last updated."
+    updated_at: DateTime!
+}

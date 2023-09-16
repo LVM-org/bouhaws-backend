@@ -2,6 +2,7 @@
 
 namespace App\GraphQL\Queries;
 
+use App\Models\Notification;
 use App\Models\Profile;
 use App\Models\User;
 use App\Services\FinancialService;
@@ -31,10 +32,16 @@ final class UserQuery
         return Profile::orderBy('points', 'desc')->where('type', 'student')->take(10)->get();
     }
 
-    public function userWallet()
+    public function userWallet($_, array $args)
     {
         $financialService = new FinancialService();
 
         return $financialService->getWallet(Auth::user()->id);
     }
+
+    public function myNotifications($_, array $args)
+    {
+        return Notification::where('user_id', Auth::user()->id)->orderBy('created_at', 'desc')->take(50)->get();
+    }
+
 }

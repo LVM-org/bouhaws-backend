@@ -5,6 +5,7 @@ namespace App\GraphQL\Mutations;
 use App\Exceptions\GraphQLException;
 use App\Models\Profile;
 use App\Models\User;
+use App\Services\NotificationService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -12,10 +13,12 @@ use Illuminate\Support\Facades\Auth;
 final class UserMutator
 {
     protected $userService;
+    protected $notificationService;
 
     public function __construct()
     {
         $this->userService = new UserService();
+        $this->notificationService = new NotificationService();
     }
 
     public function updateProfile($_, array $args)
@@ -93,5 +96,12 @@ final class UserMutator
         // broadcast message to other users
 
         return $conversationMessage;
+    }
+
+    public function markNotificationsAsRead($_, array $args)
+    {
+        $this->notificationService->markNotificationsAsRead($args['notification_uuids']);
+
+        return true;
     }
 }
