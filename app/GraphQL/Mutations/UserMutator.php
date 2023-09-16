@@ -53,7 +53,7 @@ final class UserMutator
             $mediaUrl = $userService->uploadFile($request, false);
         }
 
-        $this->userService->updateProfile(new Request([
+        $this->userService->createOrUpdateProfile(new Request([
             'photo_url' => $mediaUrl,
             'bio' => isset($args['bio']) ? $args['bio'] : null,
             'school' => isset($args['school']) ? $args['school'] : null,
