@@ -44,6 +44,13 @@ final class UserMutator
             ]);
         }
 
+        if (isset($args['phone_number'])) {
+            $user = Auth::user();
+            $user->update([
+                'phone_number' => $args['phone_number'],
+            ]);
+        }
+
         $mediaUrl = null;
 
         if (isset($args['photo_url'])) {

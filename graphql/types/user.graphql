@@ -15,6 +15,9 @@ type User {
     "Unique username"
     username: String
 
+    "User phone number"
+    phone_number: String
+
     "User wallet"
     wallet: Wallet! @hasOne
 
