@@ -181,15 +181,15 @@ class ProjectService
 
             $projectLike->delete();
         } else {
-            $projectEntryLike = ProjectEntryLike::create([
+            $projectLike = ProjectEntryLike::create([
                 'user_id' => $request->user_id,
                 'project_entry_id' => $request->project_entry_id,
             ]);
 
-            $projectEntryLike->save();
+            $projectLike->save();
         }
 
-        return $projectEntryLike;
+        return $projectLike;
     }
 
     public function saveProjectEntryComment($request)
