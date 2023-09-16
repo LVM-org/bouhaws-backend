@@ -16,7 +16,7 @@ class NotificationService
             "model_type" => $request->model_type,
             "user_id" => $request->user_id,
             "model_type_id" => $request->model_type_id,
-            "extra_url" => $request->extra_url,
+            "extra_url" => isset($request->extra_url) ? $request->extra_url : '',
             "read" => false,
         ]);
 
