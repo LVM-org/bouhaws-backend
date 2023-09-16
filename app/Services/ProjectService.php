@@ -157,17 +157,19 @@ class ProjectService
 
             $projectEntry->save();
 
-            // send notification
-            $notificationService = new NotificationService();
+            if (Auth::user()->id != $request->user_id) {
+                // send notification
+                $notificationService = new NotificationService();
 
-            $notificationService->addNotification((object) [
-                "title" => Auth::user()->username . " submitted an entry to " . $projectEntry->project->title,
-                "body" => '',
-                "type" => 'activity',
-                "model_type" => 'project_entry',
-                'user_id' => $projectEntry->project->user_id,
-                "model_type_id" => $projectEntry->uuid,
-            ]);
+                $notificationService->addNotification((object) [
+                    "title" => Auth::user()->username . " submitted an entry to " . $projectEntry->project->title,
+                    "body" => '',
+                    "type" => 'activity',
+                    "model_type" => 'project_entry',
+                    'user_id' => $projectEntry->project->user_id,
+                    "model_type_id" => $projectEntry->uuid,
+                ]);
+            }
 
             return $projectEntry;
         }
@@ -201,17 +203,20 @@ class ProjectService
 
             $projectLike->save();
 
-            // send notification
-            $notificationService = new NotificationService();
+            if (Auth::user()->id != $request->user_id) {
+                // send notification
+                $notificationService = new NotificationService();
 
-            $notificationService->addNotification((object) [
-                "title" => Auth::user()->username . " liked on your project entry",
-                "body" => '',
-                "type" => 'activity',
-                "model_type" => 'project_entry_like',
-                'user_id' => $projectLike->project_entry->user_id,
-                "model_type_id" => $projectLike->uuid,
-            ]);
+                $notificationService->addNotification((object) [
+                    "title" => Auth::user()->username . " liked on your project entry",
+                    "body" => '',
+                    "type" => 'activity',
+                    "model_type" => 'project_entry_like',
+                    'user_id' => $projectLike->project_entry->user_id,
+                    "model_type_id" => $projectLike->uuid,
+                ]);
+            }
+
         }
 
         return $projectLike;
@@ -229,17 +234,19 @@ class ProjectService
 
         $projectEntrycomment->save();
 
-        // send notification
-        $notificationService = new NotificationService();
+        if (Auth::user()->id != $request->user_id) {
+            // send notification
+            $notificationService = new NotificationService();
 
-        $notificationService->addNotification((object) [
-            "title" => Auth::user()->username . " commented on your project entry",
-            "body" => $projectEntrycomment->content,
-            "type" => 'activity',
-            "model_type" => 'project_entry_comment',
-            'user_id' => $projectEntrycomment->project_entry->user_id,
-            "model_type_id" => $projectEntrycomment->uuid,
-        ]);
+            $notificationService->addNotification((object) [
+                "title" => Auth::user()->username . " commented on your project entry",
+                "body" => $projectEntrycomment->content,
+                "type" => 'activity',
+                "model_type" => 'project_entry_comment',
+                'user_id' => $projectEntrycomment->project_entry->user_id,
+                "model_type_id" => $projectEntrycomment->uuid,
+            ]);
+        }
 
         return $projectEntrycomment;
     }
