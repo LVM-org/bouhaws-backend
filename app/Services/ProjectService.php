@@ -177,9 +177,9 @@ class ProjectService
         $projectLike = ProjectEntryLike::where('user_id', $request->user_id)->where('project_entry_id', $request->project_entry_id)->first();
 
         if ($projectLike) {
-            $projectLike = ProjectEntryLike::where('user_id', $request->user_id)->where('project_entry_id', $request->project_entry_id);
+            $projectLikeToDelete = ProjectEntryLike::where('user_id', $request->user_id)->where('project_entry_id', $request->project_entry_id);
 
-            $projectLike->delete();
+            $projectLikeToDelete->delete();
         } else {
             $projectLike = ProjectEntryLike::create([
                 'user_id' => $request->user_id,
