@@ -19,7 +19,7 @@ type User {
     phone_number: String
 
     "User wallet"
-    wallet: Wallet! @hasOne
+    wallet: Wallet @hasOne
 
     "User profile"
     profile: Profile! @hasOne
