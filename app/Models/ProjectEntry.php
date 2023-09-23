@@ -67,8 +67,10 @@ class ProjectEntry extends Model
     {
         if ($this->project_category_id) {
             return ProjectCategory::where('id', $this->project_category_id)->first();
-        } else {
+        } else if ($this->project) {
             return ProjectCategory::where('id', $this->project->project_category_id)->first();
+        } else {
+            return null;
         }
     }
 
