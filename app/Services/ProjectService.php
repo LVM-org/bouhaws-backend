@@ -177,14 +177,24 @@ class ProjectService
 
     public function saveProjectEntryBookmark($request)
     {
-        $projectEntryBookmark = ProjectEntryBookmark::create([
-            'user_id' => $request->user_id,
-            'project_entry_id' => $request->project_entry_id,
-        ]);
+        $projectBookmark = ProjectEntryBookmark::where('user_id', $request->user_id)->where('project_entry_id', $request->project_entry_id)->first();
 
-        $projectEntryBookmark->save();
+        if ($projectBookmark) {
+            $projectBookmarkToDelete = ProjectEntryBookmark::where('user_id', $request->user_id)->where('project_entry_id', $request->project_entry_id);
 
-        return $projectEntryBookmark;
+            $projectBookmarkToDelete->delete();
+        } else {
+
+            $projectBookmark = ProjectEntryBookmark::create([
+                'user_id' => $request->user_id,
+                'project_entry_id' => $request->project_entry_id,
+            ]);
+
+            $projectBookmark->save();
+
+        }
+
+        return $projectBookmark;
     }
 
     public function saveProjectEntryLike($request)

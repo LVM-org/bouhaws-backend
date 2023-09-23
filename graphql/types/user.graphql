@@ -36,6 +36,9 @@ type User {
     "User classes"
     my_classes: [BouhawsClass!]
 
+    "User bookmarked projects"
+    project_bookmarked: [ProjectEntryBookmark!]! @hasMany
+
     "When the email was verified."
     email_verified_at: DateTime
 

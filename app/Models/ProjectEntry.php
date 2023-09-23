@@ -14,6 +14,7 @@ class ProjectEntry extends Model
         'images',
         'category',
         'liked',
+        'bookmarked',
     ];
 
     /**
@@ -79,6 +80,13 @@ class ProjectEntry extends Model
         $userLike = ProjectEntryLike::where('user_id', Auth::user()->id)->where('project_entry_id', $this->id)->first();
 
         return $userLike ? true : false;
+    }
+
+    public function getBookmarkedAttribute()
+    {
+        $userBookmark = ProjectEntryBookmark::where('user_id', Auth::user()->id)->where('project_entry_id', $this->id)->first();
+
+        return $userBookmark ? true : false;
     }
 
 }

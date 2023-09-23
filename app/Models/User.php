@@ -102,6 +102,11 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         return $this->hasMany(Project::class);
     }
 
+    public function project_bookmarked()
+    {
+        return $this->hasMany(ProjectEntryBookmark::class);
+    }
+
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.
      *
