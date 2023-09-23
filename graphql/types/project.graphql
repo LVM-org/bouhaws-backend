@@ -149,6 +149,9 @@ type ProjectEntry {
     "Auth user liked this entry"
     liked: Boolean!
 
+    "Auth user bookmarked this entry"
+    bookmarked: Boolean!
+
     "The entry bookmarks"
     bookmarks: [ProjectEntryBookmark!] @hasMany
 
