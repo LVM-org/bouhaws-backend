@@ -34,7 +34,7 @@ final class AuthMutator
 
     public function signUp($_, array $args)
     {
-        $otp = mt_rand(20000, 90000);
+        $otp = mt_rand(2000, 9000);
 
         // set up user name
         $guessedUsername = explode("@", $args['email']);

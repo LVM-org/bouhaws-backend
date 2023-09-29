@@ -107,7 +107,7 @@ class AuthService
 
     public function resetUserOtp($userUuid)
     {
-        $otp = mt_rand(20000, 90000);
+        $otp = mt_rand(2000, 9000);
         $user = User::where('uuid', $userUuid)->first();
 
         if ($user == null) {
