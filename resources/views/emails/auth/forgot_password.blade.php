@@ -4,7 +4,7 @@
     We've received a request to reset the password for your [Website/Service Name] account. To verify your identity,
     please use the following 4-digit code:
 
-    <h2>{{ $user->otp }}</h2>
+    ## {{ $user->otp }}
 
     This code will expire in 30 minutes, so please use it promptly.
 
