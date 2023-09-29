@@ -2,7 +2,10 @@
 
 namespace App\Services;
 
+use App\Mail\ForgotPassword;
+use App\Mail\VerifyEmail;
 use App\Models\Notification;
+use Illuminate\Support\Facades\Mail;
 
 class NotificationService
 {
@@ -38,4 +41,17 @@ class NotificationService
 
         return true;
     }
+
+    public function sendVerifyEmail($request)
+    {
+        Mail::to($request->user)->send(new VerifyEmail($request->user));
+        return 'sent';
+    }
+
+    public function sendForgotPasswordEmail($request)
+    {
+        Mail::to($request->user)->send(new ForgotPassword($request->user));
+        return 'sent';
+    }
+
 }

@@ -5,6 +5,7 @@ namespace App\GraphQL\Mutations;
 use App\Exceptions\GraphQLException;
 use App\Models\User;
 use App\Services\AuthService;
+use App\Services\NotificationService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,11 +15,13 @@ final class AuthMutator
 {
     protected $authService;
     protected $userService;
+    protected $notificationService;
 
     public function __construct()
     {
         $this->authService = new AuthService();
         $this->userService = new UserService();
+        $this->notificationService = new NotificationService();
     }
 
     public function signIn($_, array $args)
@@ -60,6 +63,10 @@ final class AuthMutator
 
         // send verify email otp
 
+        $this->notificationService->sendVerifyEmail((object) [
+            'user' => $user,
+        ]);
+
         return $user;
     }
 
@@ -76,9 +83,13 @@ final class AuthMutator
     public function resendVerifyEmail($_, array $args)
     {
 
-        $this->authService->resetUserOtp($args['user_uuid']);
+        $user = $this->authService->resetUserOtp($args['user_uuid']);
 
         // resend verify email otp
+
+        $this->notificationService->sendVerifyEmail((object) [
+            'user' => $user,
+        ]);
 
         return true;
     }
@@ -88,8 +99,12 @@ final class AuthMutator
         $user = User::where('email', $args['email'])->first();
 
         if ($user) {
-            $this->authService->resetUserOtp($user->uuid);
+            $user = $this->authService->resetUserOtp($user->uuid);
             // send reset password email
+
+            $this->notificationService->sendForgotPasswordEmail((object) [
+                'user' => $user,
+            ]);
 
             return true;
 
