@@ -1,7 +1,7 @@
 <x-mail::message>
     Hi {{ $user->name }},
 
-    We've received a request to reset the password for your [Website/Service Name] account. To verify your identity,
+    We've received a request to reset the password for your {{ config('app.name') }} account. To verify your identity,
     please use the following 4-digit code:
 
     ## {{ $user->otp }}
