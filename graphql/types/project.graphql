@@ -236,3 +236,30 @@ type ProjectEntryLike {
     "When the project entry like was last updated."
     updated_at: DateTime!
 }
+
+"A single project entry grade"
+type ProjectEntryGrade {
+    "Unique primary key."
+    id: ID!
+
+    "Unique UUID"
+    uuid: String!
+
+    "The user that made the entry like"
+    user: User! @belongsTo
+
+    "The project entry itself"
+    project_entry: ProjectEntry! @belongsTo
+
+    "The total points"
+    total_points: Float!
+
+    "The milestones grades"
+    milestones: String!
+
+    "When the project entry like was created."
+    created_at: DateTime!
+
+    "When the project entry like was last updated."
+    updated_at: DateTime!
+}

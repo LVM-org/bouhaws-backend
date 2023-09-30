@@ -122,6 +122,11 @@ extend type Mutation @guard {
         replied_comment_id: Int
     ): ProjectEntryComment!
         @field(resolver: "ProjectMutator@saveProjectEntryComment")
+    "Grade a project entry"
+    GradeProjectEntry(
+        project_entry_uuid: String!
+        milestones: String!
+    ): ProjectEntryGrade! @field(resolver: "ProjectMutator@gradeProjectEntry")
     "Delete a project milestone"
     DeleteProjectMilestone(uuid: String!): Boolean!
         @field(resolver: "ProjectMutator@deleteProjectMilestone")

@@ -169,6 +169,14 @@ final class ProjectMutator
         ]));
     }
 
+    public function gradeProjectEntry($_, array $args)
+    {
+        return $this->projectService->gradeProjectEntry(new Request([
+            'project_entry_uuid' => $args['project_entry_uuid'],
+            'milestones' => $args['milestones'],
+        ]));
+    }
+
     public function deleteProjectMilestone($_, array $args)
     {
         return $this->projectService->deleteProjectMilestone($args['uuid']);
