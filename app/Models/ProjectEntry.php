@@ -59,6 +59,11 @@ class ProjectEntry extends Model
         return $this->hasMany(ProjectEntryBookmark::class);
     }
 
+    public function grade()
+    {
+        return $this->hasOne(ProjectEntryGrade::class);
+    }
+
     public function comments()
     {
         return $this->hasMany(ProjectEntryComment::class);

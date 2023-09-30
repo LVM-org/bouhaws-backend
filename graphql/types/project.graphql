@@ -134,6 +134,9 @@ type ProjectEntry {
     "The entry title"
     title: String!
 
+    "The entry grade"
+    grade: ProjectEntryGrade
+
     "The entry description"
     description: String!
 
