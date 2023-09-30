@@ -237,6 +237,13 @@ type ProjectEntryLike {
     updated_at: DateTime!
 }
 
+"Milestone grade"
+type MilestoneGrade {
+    uuid: String!
+    points: Float!
+    comment: String
+}
+
 "A single project entry grade"
 type ProjectEntryGrade {
     "Unique primary key."
@@ -255,7 +262,7 @@ type ProjectEntryGrade {
     total_points: Float!
 
     "The milestones grades"
-    milestones: String!
+    milestones: [MilestoneGrade!]!
 
     "When the project entry like was created."
     created_at: DateTime!

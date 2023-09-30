@@ -16,6 +16,8 @@ class ProjectEntryGrade extends Model
      */
     protected $guarded = [];
 
+    protected $appends = ['milestones'];
+
     /**
      * Get the route key for the liquidation.
      *
@@ -34,5 +36,14 @@ class ProjectEntryGrade extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function getMilestonesAttribute()
+    {
+        if ($this->attributes['milestones']) {
+            return json_decode($this->attributes['milestones'], true);
+        } else {
+            return [];
+        }
     }
 }
