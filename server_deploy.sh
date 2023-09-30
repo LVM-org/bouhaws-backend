@@ -21,6 +21,9 @@ echo "Deploying application ..."
     # Clear cache
     php artisan optimize
 
+    # Reload ligthouse cache
+    php artisan lighthouse:cache
+
     # Reload PHP to update opcache
     # echo "" | sudo -S service php-fpm reload
 # Exit maintenance mode
