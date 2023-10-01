@@ -69,6 +69,12 @@ type Profile {
     "The user school"
     school: String
 
+    "The user total points"
+    total_point: Float!
+
+    "The user level"
+    level: UserLevel!
+
     "The user student number"
     student_number: String
 
@@ -206,5 +212,34 @@ type Notification {
     created_at: DateTime!
 
     "When the conversation message was last updated."
+    updated_at: DateTime!
+}
+
+type UserLevel {
+    current: Level!
+    next: Level!
+}
+
+"The user level"
+type Level {
+    "Unique primary key."
+    id: ID!
+
+    "Unique UUID"
+    uuid: String!
+
+    "The label"
+    label: String!
+
+    "The title"
+    title: String!
+
+    "The min points"
+    min_points: Float!
+
+    "When the level was created."
+    created_at: DateTime!
+
+    "When the level was last updated."
     updated_at: DateTime!
 }

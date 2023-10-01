@@ -29,7 +29,7 @@ final class UserQuery
 
     public function leaderboard($_, array $args)
     {
-        return Profile::orderBy('points', 'desc')->where('type', 'student')->take(10)->get();
+        return Profile::where('type', 'student')->get()->sortByDesc('total_point')->take(10)->toArray();
     }
 
     public function userWallet($_, array $args)

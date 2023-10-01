@@ -16,7 +16,7 @@ class Profile extends Model
      */
     protected $guarded = [];
 
-    protected $appends = ['enrolled_courses', 'enrolled_classes', 'photo_url'];
+    protected $appends = ['enrolled_courses', 'enrolled_classes', 'photo_url', 'total_point', 'level'];
 
     /**
      * Get the route key for the liquidation.
@@ -61,5 +61,23 @@ class Profile extends Model
     {
         $enrolled_classes_uuid = $this->enrolled_classes_uuid ? json_decode($this->enrolled_classes_uuid) : [];
         return BouhawsClass::whereIn('uuid', $enrolled_classes_uuid)->get();
+    }
+
+    public function getTotalPointAttribute()
+    {
+        return ProjectEntryGrade::where('user_id', $this->user_id)->sum('total_points');
+    }
+
+    public function getLevelAttribute()
+    {
+        $currentPoints = $this->getTotalPointAttribute();
+
+        $current = Level::where('min_points', '<=', $currentPoints)->first();
+        $next = Level::where('min_points', '>', $current->min_points)->first();
+
+        return [
+            "current" => $current,
+            "next" => $next,
+        ];
     }
 }
