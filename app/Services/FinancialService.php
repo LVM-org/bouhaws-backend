@@ -92,7 +92,7 @@ class FinancialService
             'amount' => $request->amount,
             'currency' => $currency,
             'wallet_balance' => $walletBalance,
-            'charge_id' => $request->type == 'credit' ? $wallet->id : $request->charge_id,
+            'chargeable_id' => $request->type == 'credit' ? $wallet->id : $request->charge_id,
             'chargeable_type' => $request->type == 'credit' ? 'wallet' : $request->chargeable_type,
             'description' => $request->description,
             'status' => $request->status,
