@@ -99,6 +99,7 @@ class FinancialService
             'dr_or_cr' => $request->type,
             'charges' => $request->charges,
             'reference' => $request->reference,
+            'gateway' => $request->gateway,
         ]);
 
         $transaction->save();
