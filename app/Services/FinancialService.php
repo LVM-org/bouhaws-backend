@@ -2,8 +2,10 @@
 
 namespace App\Services;
 
+use App\Exceptions\GraphQLException;
 use App\Models\Transaction;
 use App\Models\Wallet;
+use Illuminate\Support\Facades\Auth;
 
 class FinancialService
 {
@@ -39,36 +41,13 @@ class FinancialService
             $amount = $request->amount;
 
             if (!$request->auto_generated) {
-                if ($request->card_id) {
-
-                    // $paymentSuccessful = $this->chargeCard($request);
-
-                    // if (!$paymentSuccessful) {
-                    //     abort(500, 'Card Payment Failed');
-                    // }
-
-                    // $transaction = $this->addTransactionData($request, $wallet, $walletBalance);
-
-                    // $this->updateUserWallet($request->type, $amount, $wallet, $walletBalance);
-
-                    // return $transaction;
-                }
 
                 if ($request->gateway == 'stripe') {
 
-                    // $verificationData = $this->paymentHandler->verifyTransaction($request->reference);
+                    $transaction = $this->addTransactionData($request, $wallet, $walletBalance);
 
-                    // if ($verificationData['status'] == 'success') {
-                    //     $amountInFloat = (float) $verificationData['amount'];
+                    $this->updateUserWallet($request->type, $request->amount, $wallet, $walletBalance);
 
-                    //     $request->merge(['amount' => $amount / 100]);
-
-                    //     $transaction = $this->addTransactionData($request, $wallet, $walletBalance);
-
-                    //     $this->updateUserWallet($request->type, $request->amount, $wallet, $walletBalance);
-
-                    //     $this->saveCard($verificationData, $wallet, 'paystack');
-                    // }
                 }
 
             } else {
@@ -124,6 +103,39 @@ class FinancialService
         $transaction->save();
 
         return $transaction;
+    }
+
+    public function processSingleCharge($request)
+    {
+        $authUser = Auth::user();
+
+        try {
+            $stripeCharge = $authUser->charge(
+                $request->amount, $request->paymentMethodId, [
+                    "user_uuid" => $authUser->uuid,
+                ]
+            );
+
+            // at this point the charge was successful
+            $this->createTransaction((object) [
+                "amount" => (float) $request->amount / 100,
+                "reference" => $stripeCharge['id'],
+                "type" => 'credit',
+                "user_id" => $authUser->id,
+                "auto_generated" => false,
+                "status" => 'successful',
+                "gateway" => "stripe",
+                "description" => "Wallet funding",
+                "charges" => 0,
+            ]);
+
+            return true;
+
+        } catch (\Throwable $th) {
+
+            throw new GraphQLException($th->getMessage());
+
+        }
     }
 
 }
