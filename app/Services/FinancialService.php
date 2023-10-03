@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Exceptions\GraphQLException;
 use App\Models\Transaction;
+use App\Models\User;
 use App\Models\Wallet;
 use Illuminate\Support\Facades\Auth;
 
@@ -110,7 +111,7 @@ class FinancialService
         $authUser = Auth::user();
 
         try {
-            $stripeCharge = $authUser->charge(
+            $stripeCharge = (new User)->charge(
                 $request->amount, $request->paymentMethodId, [
                     "user_uuid" => $authUser->uuid,
                 ]
