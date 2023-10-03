@@ -118,7 +118,7 @@ class FinancialService
             // at this point the charge was successful
             $this->createTransaction((object) [
                 "amount" => (float) $request->amount / 100,
-                "reference" => $stripeCharge['id'],
+                "reference" => $stripeCharge->id,
                 "type" => 'credit',
                 "user_id" => $authUser->id,
                 "auto_generated" => false,
