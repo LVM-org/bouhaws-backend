@@ -112,9 +112,7 @@ class FinancialService
 
         try {
             $stripeCharge = (new User)->charge(
-                $request->amount, $request->paymentMethodId, [
-                    "user_uuid" => $authUser->uuid,
-                ]
+                $request->amount, $request->paymentMethodId
             );
 
             // at this point the charge was successful
