@@ -5,6 +5,7 @@ namespace App\Providers;
 // use Illuminate\Support\Facades\Gate;
 
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
@@ -27,7 +28,13 @@ class AuthServiceProvider extends ServiceProvider
 
         $this->app['auth']->viaRequest('api', function ($request) {
             if ($request->input('api_token')) {
-                return User::where('api_token', $request->input('api_token'))->first();
+                $user = User::where('api_token', $request->input('api_token'))->first();
+                if ($user) {
+                    $user->profile()->update([
+                        'last_active' => Carbon::now(),
+                    ]);
+                }
+                return $user;
             }
         });
     }

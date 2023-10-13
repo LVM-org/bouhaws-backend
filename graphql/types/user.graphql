@@ -75,6 +75,9 @@ type Profile {
     "The user level"
     level: UserLevel!
 
+    "Last active"
+    last_active: String
+
     "The user student number"
     student_number: String
 
