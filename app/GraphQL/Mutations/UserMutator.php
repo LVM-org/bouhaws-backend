@@ -68,6 +68,9 @@ final class UserMutator
             'year_of_enrollment' => isset($args['year_of_enrollment']) ? $args['year_of_enrollment'] : null,
             'type' => isset($args['type']) ? $args['type'] : null,
             'push_notification_enabled' => isset($args['push_notification_enabled']) ? $args['push_notification_enabled'] : null,
+            'gender' => isset($args['gender']) ? $args['gender'] : null,
+            'city' => isset($args['city']) ? $args['city'] : null,
+            'nationality' => isset($args['nationality']) ? $args['nationality'] : null,
             'user_id' => Auth::user()->id,
         ]));
 
