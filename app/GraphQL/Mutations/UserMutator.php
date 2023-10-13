@@ -97,7 +97,7 @@ final class UserMutator
             'type' => $args['type'],
             'user_id' => Auth::user()->id,
             'conversation_id' => $args['conversation_id'],
-            'content' => $args['content'],
+            'content' => isset($args['content']) ? $args['content'] : " ",
             'media' => $args['media'],
         ]));
 

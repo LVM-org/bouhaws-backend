@@ -40,7 +40,7 @@ type Course {
     code: String
 
     "The course title"
-    title: String!
+    title: String
 
     "The course photo_url"
     photo_url: String

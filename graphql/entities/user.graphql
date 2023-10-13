@@ -48,7 +48,7 @@ extend type Mutation @guard {
         "can be text, image, image_gallery"
         type: String!
         conversation_id: Int!
-        content: String!
+        content: String
         "For single image message, send the uploaded image url, for image_gallery message, send an stringified array of the uploaded images url"
         media: String!
     ): ConversationMessage!
