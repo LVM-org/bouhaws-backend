@@ -18,5 +18,5 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
 });
 
 Broadcast::channel('online', function ($user) {
-    return $user->toArray();
+    return $user;
 });
