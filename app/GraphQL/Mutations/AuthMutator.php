@@ -72,12 +72,17 @@ final class AuthMutator
 
     public function verifyEmailOTP($_, array $args)
     {
-        $user = $this->authService->verifyUserOtp(new Request([
-            'email' => $args['email'],
-            'otp' => $args['otp'],
-        ]));
+        try {
+            $user = $this->authService->verifyUserOtp(new Request([
+                'email' => $args['email'],
+                'otp' => $args['otp'],
+            ]));
 
-        return $user;
+            return $user;
+        } catch (\Throwable $th) {
+
+            throw new GraphQLException($th->getMessage());
+        }
     }
 
     public function resendVerifyEmail($_, array $args)
