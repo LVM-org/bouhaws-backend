@@ -134,9 +134,6 @@ type ProjectEntry {
     "The entry title"
     title: String!
 
-    "The entry grade"
-    grade: ProjectEntryGrade
-
     "The entry description"
     description: String!
 
@@ -149,14 +146,11 @@ type ProjectEntry {
     "The entry likes"
     likes: [ProjectEntryLike!] @hasMany
 
-    "Auth user liked this entry"
-    liked: Boolean!
-
-    "Auth user bookmarked this entry"
-    bookmarked: Boolean!
-
     "The entry bookmarks"
     bookmarks: [ProjectEntryBookmark!] @hasMany
+
+    "The entry activities. Total likes, bookmarks and comments"
+    activities: Int
 
     "The entry comments"
     comments: [ProjectEntryComment!] @hasMany
@@ -232,40 +226,6 @@ type ProjectEntryLike {
 
     "The project entry itself"
     project_entry: ProjectEntry! @belongsTo
-
-    "When the project entry like was created."
-    created_at: DateTime!
-
-    "When the project entry like was last updated."
-    updated_at: DateTime!
-}
-
-"Milestone grade"
-type MilestoneGrade {
-    uuid: String!
-    points: Float!
-    comment: String
-}
-
-"A single project entry grade"
-type ProjectEntryGrade {
-    "Unique primary key."
-    id: ID!
-
-    "Unique UUID"
-    uuid: String!
-
-    "The user that made the entry like"
-    user: User! @belongsTo
-
-    "The project entry itself"
-    project_entry: ProjectEntry! @belongsTo
-
-    "The total points"
-    total_points: Float!
-
-    "The milestones grades"
-    milestones: [MilestoneGrade!]!
 
     "When the project entry like was created."
     created_at: DateTime!

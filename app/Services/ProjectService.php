@@ -8,11 +8,9 @@ use App\Models\ProjectCategory;
 use App\Models\ProjectEntry;
 use App\Models\ProjectEntryBookmark;
 use App\Models\ProjectEntryComment;
-use App\Models\ProjectEntryGrade;
 use App\Models\ProjectEntryLike;
 use App\Models\ProjectMilestone;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Auth;
 
 class ProjectService
 {
@@ -158,79 +156,46 @@ class ProjectService
 
             $projectEntry->save();
 
-            if (Auth::user()->id != $request->user_id) {
-                // send notification
-                $notificationService = new NotificationService();
-
-                $notificationService->addNotification((object) [
-                    "title" => Auth::user()->username . " submitted an entry to " . $projectEntry->project->title,
-                    "body" => '',
-                    "type" => 'activity',
-                    "model_type" => 'project_entry',
-                    'user_id' => $projectEntry->project->user_id,
-                    "model_type_id" => $projectEntry->uuid,
-                ]);
-            }
-
             return $projectEntry;
         }
     }
 
     public function saveProjectEntryBookmark($request)
     {
-        $projectBookmark = ProjectEntryBookmark::where('user_id', $request->user_id)->where('project_entry_id', $request->project_entry_id)->first();
+        $projectEntryBookmark = ProjectEntryBookmark::create([
+            'user_id' => $request->user_id,
+            'project_entry_id' => $request->project_entry_id,
+        ]);
 
-        if ($projectBookmark) {
-            $projectBookmarkToDelete = ProjectEntryBookmark::where('user_id', $request->user_id)->where('project_entry_id', $request->project_entry_id);
+        $projectEntryBookmark->save();
 
-            $projectBookmarkToDelete->delete();
-        } else {
+        // Update project activity
+        $currentActivities = (float) $projectEntryBookmark->project_entry->activities;
 
-            $projectBookmark = ProjectEntryBookmark::create([
-                'user_id' => $request->user_id,
-                'project_entry_id' => $request->project_entry_id,
-            ]);
+        $projectEntryBookmark->project_entry->update([
+            'activities' => $currentActivities + 1,
+        ]);
 
-            $projectBookmark->save();
-
-        }
-
-        return $projectBookmark;
+        return $projectEntryBookmark;
     }
 
     public function saveProjectEntryLike($request)
     {
-        $projectLike = ProjectEntryLike::where('user_id', $request->user_id)->where('project_entry_id', $request->project_entry_id)->first();
+        $projectEntryLike = ProjectEntryLike::create([
+            'user_id' => $request->user_id,
+            'project_entry_id' => $request->project_entry_id,
+        ]);
 
-        if ($projectLike) {
-            $projectLikeToDelete = ProjectEntryLike::where('user_id', $request->user_id)->where('project_entry_id', $request->project_entry_id);
+        $projectEntryLike->save();
 
-            $projectLikeToDelete->delete();
-        } else {
-            $projectLike = ProjectEntryLike::create([
-                'user_id' => $request->user_id,
-                'project_entry_id' => $request->project_entry_id,
-            ]);
+        // Update project activity
+        $currentActivities = (float) $projectEntryLike->project_entry->activities;
 
-            $projectLike->save();
+        $projectEntryLike->project_entry->update([
+            'activities' => $currentActivities + 1,
+        ]);
 
-            if (Auth::user()->id != $request->user_id) {
-                // send notification
-                $notificationService = new NotificationService();
-
-                $notificationService->addNotification((object) [
-                    "title" => Auth::user()->username . " liked on your project entry",
-                    "body" => '',
-                    "type" => 'activity',
-                    "model_type" => 'project_entry_like',
-                    'user_id' => $projectLike->project_entry->user_id,
-                    "model_type_id" => $projectLike->uuid,
-                ]);
-            }
-
-        }
-
-        return $projectLike;
+        return $projectEntryLike;
     }
 
     public function saveProjectEntryComment($request)
@@ -245,61 +210,14 @@ class ProjectService
 
         $projectEntrycomment->save();
 
-        if (Auth::user()->id != $request->user_id) {
-            // send notification
-            $notificationService = new NotificationService();
+        // Update project activity
+        $currentActivities = (float) $projectEntrycomment->project_entry->activities;
 
-            $notificationService->addNotification((object) [
-                "title" => Auth::user()->username . " commented on your project entry",
-                "body" => $projectEntrycomment->content,
-                "type" => 'activity',
-                "model_type" => 'project_entry_comment',
-                'user_id' => $projectEntrycomment->project_entry->user_id,
-                "model_type_id" => $projectEntrycomment->uuid,
-            ]);
-        }
+        $projectEntrycomment->project_entry->update([
+            'activities' => $currentActivities + 1,
+        ]);
 
         return $projectEntrycomment;
-    }
-
-    public function gradeProjectEntry($request)
-    {
-
-        $projectEntry = ProjectEntry::where('uuid', $request->project_entry_uuid)->first();
-
-        if ($projectEntry == null) {
-            throw new GraphQLException("Project entry not found");
-        }
-
-        $entryGrade = ProjectEntryGrade::where('project_entry_id', $projectEntry->id)->first();
-
-        $projectMilestones = json_decode($request->milestones, true);
-
-        $totalPoints = 0;
-
-        foreach ($projectMilestones as $milestone) {
-            $totalPoints += $milestone['points'];
-        }
-
-        if ($entryGrade) {
-
-            $entryGrade->update([
-                'total_points' => $totalPoints,
-                'milestones' => $request->milestones,
-            ]);
-
-        } else {
-            $entryGrade = ProjectEntryGrade::create([
-                "user_id" => $projectEntry->user_id,
-                "project_entry_id" => $projectEntry->id,
-                'total_points' => $totalPoints,
-                'milestones' => $request->milestones,
-            ]);
-
-            $entryGrade->save();
-        }
-
-        return $entryGrade;
     }
 
     public function deleteProjectMilestone($uuid)
