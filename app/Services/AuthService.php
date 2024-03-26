@@ -171,7 +171,7 @@ class AuthService
 
     public function verifyUserOtp($request)
     {
-        $user = User::where('uuid', $request->user_uuid)->first();
+        $user = User::where('uuid', $request->email)->first();
 
         if ($user == null) {
             $user = User::where('email', $request->email)->first();
@@ -179,8 +179,12 @@ class AuthService
 
         if ($user->email_verified_at != null) {
             return "Otp Verified";
-        } elseif ($user->otp_expires_at && $user->otp_expires_at < Carbon::now()) {
-            abort(403, "Otp expired");
+        }
+
+        if ($user->otp_expires_at) {
+            if (Carbon::parse($user->otp_expires_at)->lt(Carbon::now())) {
+                throw new GraphQLException("Otp expired");
+            }
         }
         if ($user->otp == trim($request->otp)) {
             $user->update([
