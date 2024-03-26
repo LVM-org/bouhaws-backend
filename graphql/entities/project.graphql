@@ -24,9 +24,10 @@ extend type Query @guard {
                     "status"
                     "description"
                     "project_category_id"
+                    "activities"
                 ]
             )
-        orderBy: _ @orderBy(columns: ["created_at"])
+        orderBy: _ @orderBy(columns: ["created_at", "activities"])
         hasUser: _ @whereHasConditions(columns: ["uuid"])
         hasProject: _
             @whereHasConditions(columns: ["uuid", "project_category_id"])
