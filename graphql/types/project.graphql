@@ -146,6 +146,12 @@ type ProjectEntry {
     "The entry likes"
     likes: [ProjectEntryLike!] @hasMany
 
+    "Liked by user"
+    liked: Boolean!
+
+    "bookedmark by user"
+    bookmarked: Boolean!
+
     "The entry bookmarks"
     bookmarks: [ProjectEntryBookmark!] @hasMany
 
