@@ -171,30 +171,36 @@ class AuthService
 
     public function verifyUserOtp($request)
     {
-        $user = User::where('uuid', $request->email)->first();
+        try {
+            $user = User::where('uuid', $request->email)->first();
 
-        if ($user == null) {
-            $user = User::where('email', $request->email)->first();
-        }
-
-        if ($user->email_verified_at != null) {
-            return "Otp Verified";
-        }
-
-        if ($user->otp_expires_at) {
-            if (Carbon::parse($user->otp_expires_at)->lt(Carbon::now())) {
-                throw new GraphQLException("Otp expired");
+            if ($user == null) {
+                $user = User::where('email', $request->email)->first();
             }
-        }
-        if ($user->otp == trim($request->otp)) {
-            $user->update([
-                'email_verified_at' => Carbon::now(),
-            ]);
-        } else {
-            throw new GraphQLException("Incorrect OTP! Enter valid otp");
+
+            if ($user->email_verified_at != null) {
+                return "Otp Verified";
+            }
+
+            if ($user->otp_expires_at) {
+                if (Carbon::parse($user->otp_expires_at)->lt(Carbon::now())) {
+                    throw new GraphQLException("Otp expired");
+                }
+            }
+            if ($user->otp == trim($request->otp)) {
+                $user->update([
+                    'email_verified_at' => Carbon::now(),
+                ]);
+            } else {
+                throw new GraphQLException("Incorrect OTP! Enter valid otp");
+            }
+
+            return 'Otp Verified';
+
+        } catch (\Throwable $th) {
+            throw new GraphQLException($th->getMessage());
         }
 
-        return 'Otp Verified';
     }
 
     public function updateUserStatus($request)
