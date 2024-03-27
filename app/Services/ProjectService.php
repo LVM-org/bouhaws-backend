@@ -8,6 +8,7 @@ use App\Models\ProjectCategory;
 use App\Models\ProjectEntry;
 use App\Models\ProjectEntryBookmark;
 use App\Models\ProjectEntryComment;
+use App\Models\ProjectEntryGrade;
 use App\Models\ProjectEntryLike;
 use App\Models\ProjectMilestone;
 use Carbon\Carbon;
@@ -218,6 +219,46 @@ class ProjectService
         ]);
 
         return $projectEntrycomment;
+    }
+
+    public function gradeProjectEntry($request)
+    {
+
+        $projectEntry = ProjectEntry::where('uuid', $request->project_entry_uuid)->first();
+
+        if ($projectEntry == null) {
+            throw new GraphQLException("Project entry not found");
+        }
+
+        $entryGrade = ProjectEntryGrade::where('project_entry_id', $projectEntry->id)->first();
+
+        $projectMilestones = json_decode($request->milestones, true);
+
+        $totalPoints = 0;
+
+        foreach ($projectMilestones as $milestone) {
+            $totalPoints += $milestone['points'];
+        }
+
+        if ($entryGrade) {
+
+            $entryGrade->update([
+                'total_points' => $totalPoints,
+                'milestones' => $request->milestones,
+            ]);
+
+        } else {
+            $entryGrade = ProjectEntryGrade::create([
+                "user_id" => $projectEntry->user_id,
+                "project_entry_id" => $projectEntry->id,
+                'total_points' => $totalPoints,
+                'milestones' => $request->milestones,
+            ]);
+
+            $entryGrade->save();
+        }
+
+        return $entryGrade;
     }
 
     public function deleteProjectMilestone($uuid)

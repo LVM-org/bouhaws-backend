@@ -47,6 +47,9 @@ type Project {
     "The current user entry"
     user_entry: ProjectEntry
 
+    "The entry grade"
+    grade: ProjectEntryGrade
+
     "The project entries"
     entries: [ProjectEntry!] @hasMany
 
@@ -186,6 +189,40 @@ type ProjectEntryBookmark {
     created_at: DateTime!
 
     "When the project entry bookmark was last updated."
+    updated_at: DateTime!
+}
+
+"Milestone grade"
+type MilestoneGrade {
+    uuid: String!
+    points: Float!
+    comment: String
+}
+
+"A single project entry grade"
+type ProjectEntryGrade {
+    "Unique primary key."
+    id: ID!
+
+    "Unique UUID"
+    uuid: String!
+
+    "The user that made the entry like"
+    user: User! @belongsTo
+
+    "The project entry itself"
+    project_entry: ProjectEntry! @belongsTo
+
+    "The total points"
+    total_points: Float!
+
+    "The milestones grades"
+    milestones: [MilestoneGrade!]!
+
+    "When the project entry like was created."
+    created_at: DateTime!
+
+    "When the project entry like was last updated."
     updated_at: DateTime!
 }
 
