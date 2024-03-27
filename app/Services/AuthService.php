@@ -179,7 +179,7 @@ class AuthService
             }
 
             if ($user->email_verified_at != null) {
-                return "Otp Verified";
+                return $user;
             }
 
             if ($user->otp_expires_at) {
@@ -195,7 +195,7 @@ class AuthService
                 throw new GraphQLException("Incorrect OTP! Enter valid otp");
             }
 
-            return 'Otp Verified';
+            return $user;
 
         } catch (\Throwable $th) {
             throw new GraphQLException($th->getMessage());
