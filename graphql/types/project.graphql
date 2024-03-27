@@ -47,9 +47,6 @@ type Project {
     "The current user entry"
     user_entry: ProjectEntry
 
-    "The entry grade"
-    grade: ProjectEntryGrade
-
     "The project entries"
     entries: [ProjectEntry!] @hasMany
 
@@ -148,6 +145,9 @@ type ProjectEntry {
 
     "The entry likes"
     likes: [ProjectEntryLike!] @hasMany
+
+    "The entry grade"
+    grade: ProjectEntryGrade
 
     "Liked by user"
     liked: Boolean!

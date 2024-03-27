@@ -79,6 +79,7 @@ final class AuthMutator
             ]));
 
             return $user;
+
         } catch (\Throwable $th) {
 
             throw new GraphQLException($th->getMessage());
