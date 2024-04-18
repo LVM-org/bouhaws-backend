@@ -87,6 +87,15 @@ type Profile {
     "The user profile cover image"
     cover_image: String
 
+    "User website link"
+    website_link: String
+
+    "User instagram link"
+    instagram_link: String
+
+    "User twitter link"
+    twitter_link: String
+
     "The user nationality"
     nationality: String
 
