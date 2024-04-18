@@ -52,12 +52,20 @@ final class UserMutator
         }
 
         $mediaUrl = null;
+        $coverImageUrl = null;
 
         if (isset($args['photo_url'])) {
             $userService = new UserService();
             $request = new Request();
             $request->files->set('attachment', $args['photo_url']);
             $mediaUrl = $userService->uploadFile($request, false);
+        }
+
+        if (isset($args['cover_image'])) {
+            $userService = new UserService();
+            $request = new Request();
+            $request->files->set('attachment', $args['cover_image']);
+            $coverImageUrl = $userService->uploadFile($request, false);
         }
 
         $this->userService->createOrUpdateProfile(new Request([
@@ -71,6 +79,7 @@ final class UserMutator
             'gender' => isset($args['gender']) ? $args['gender'] : null,
             'city' => isset($args['city']) ? $args['city'] : null,
             'nationality' => isset($args['nationality']) ? $args['nationality'] : null,
+            'cover_image' => $coverImageUrl,
             'user_id' => Auth::user()->id,
         ]));
 

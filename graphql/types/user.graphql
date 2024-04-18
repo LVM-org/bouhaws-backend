@@ -84,6 +84,9 @@ type Profile {
     "The user city"
     city: String
 
+    "The user profile cover image"
+    cover_image: String
+
     "The user nationality"
     nationality: String
 

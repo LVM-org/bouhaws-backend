@@ -35,6 +35,7 @@ class UserService
                 'year_of_enrollment' => $request->year_of_enrollment ? $request->year_of_enrollment : $userProfile->year_of_enrollment,
                 'enrolled_courses_uuid' => $request->enrolled_courses_uuid ? $request->enrolled_courses_uuid : $userProfile->enrolled_courses_uuid,
                 'enrolled_classes_uuid' => $request->enrolled_classes_uuid ? $request->enrolled_classes_uuid : $userProfile->enrolled_classes_uuid,
+                'cover_image' => $request->cover_image ? $request->cover_image : $userProfile->cover_image,
                 'push_notification_enabled' => $request->push_notification_enabled != null ? $request->push_notification_enabled : $userProfile->push_notification_enabled,
             ]);
 

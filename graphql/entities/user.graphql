@@ -34,6 +34,7 @@ extend type Mutation @guard {
         city: String
         nationality: String
         push_notification_enabled: Boolean
+        cover_image: Upload
     ): Profile! @field(resolver: "UserMutator@updateProfile")
     "Start a new conversation"
     StartConversation(
