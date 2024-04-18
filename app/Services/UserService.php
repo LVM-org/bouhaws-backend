@@ -36,6 +36,9 @@ class UserService
                 'enrolled_courses_uuid' => $request->enrolled_courses_uuid ? $request->enrolled_courses_uuid : $userProfile->enrolled_courses_uuid,
                 'enrolled_classes_uuid' => $request->enrolled_classes_uuid ? $request->enrolled_classes_uuid : $userProfile->enrolled_classes_uuid,
                 'cover_image' => $request->cover_image ? $request->cover_image : $userProfile->cover_image,
+                'website_link' => $request->website_link ? $request->website_link : $userProfile->website_link,
+                'instagram_link' => $request->instagram_link ? $request->instagram_link : $userProfile->instagram_link,
+                'twitter_link' => $request->twitter_link ? $request->twitter_link : $userProfile->twitter_link,
                 'push_notification_enabled' => $request->push_notification_enabled != null ? $request->push_notification_enabled : $userProfile->push_notification_enabled,
             ]);
 

@@ -80,6 +80,9 @@ final class UserMutator
             'city' => isset($args['city']) ? $args['city'] : null,
             'nationality' => isset($args['nationality']) ? $args['nationality'] : null,
             'cover_image' => $coverImageUrl,
+            'website_link' => isset($args['website_link']) ? $args['website_link'] : null,
+            'instagram_link' => isset($args['instagram_link']) ? $args['instagram_link'] : null,
+            'twitter_link' => isset($args['twitter_link']) ? $args['twitter_link'] : null,
             'user_id' => Auth::user()->id,
         ]));
 
