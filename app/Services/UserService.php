@@ -102,14 +102,36 @@ class UserService
 
         } else {
 
+            $user = User::where('id', $request->user_id)->first();
+
+            $existingConversation = Conversation::where('user_id', $request->user_id)->where('associated_users_uuid', json_encode($request->associated_users_uuid))->first();
+
+            if ($existingConversation == null) {
+
+                // check if it is the other members that started the conversation
+                foreach ($request->associated_users_uuid as $userUuid) {
+                    $useData = User::where('uuid', $userUuid)->first();
+
+                    // Modify this if a group will contain more that 2 users
+                    $associatedUsers = json_encode([$user->uuid]);
+
+                    if ($useData && $existingConversation == null) {
+                        $existingConversation = Conversation::where('user_id', $useData->id)->where('associated_users_uuid', $associatedUsers)->first();
+                    }
+
+                }
+            }
+
+            if ($existingConversation) {
+                return $existingConversation;
+            }
+
             $conversation = Conversation::create([
                 'user_id' => $request->user_id,
                 'associated_users_uuid' => json_encode($request->associated_users_uuid),
             ]);
 
             $conversation->save();
-
-            $user = User::where('id', $request->user_id)->first();
 
             if ($user) {
                 $conversationOwner = ConversationMember::create([
