@@ -10,6 +10,7 @@ use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Laravel\Socialite\Facades\Socialite;
 
 final class AuthMutator
 {
@@ -68,6 +69,54 @@ final class AuthMutator
         ]);
 
         return $user;
+    }
+
+    public function googleAuth($_, array $args)
+    {
+        $token = $args['token'];
+        $access_token = Socialite::driver('google')->getAccessTokenResponse($token);
+        $user = Socialite::driver('google')->userFromToken($access_token['access_token']);
+
+        $existingUser = User::where('email', $user->getEmail())->first();
+
+        if ($existingUser) {
+
+            return $this->authService->authenticateUser(new Request([
+                'email' => $user->getEmail(),
+            ]));
+
+        } else {
+
+            // set up user name
+            $guessedUsername = explode("@", $user->getEmail());
+
+            $guessedUsername = $guessedUsername[0];
+
+            $userWithUsername = User::where('username', $guessedUsername)->first();
+
+            if ($userWithUsername) {
+                $guessedUsername = $guessedUsername . Str::random(4);
+            }
+
+            $user = $this->authService->saveUser(new Request([
+                'email' => $user->getEmail(),
+                'name' => $user->getName(),
+                'password' => Str::random(10),
+                'otp' => "090900",
+                'username' => $guessedUsername,
+            ]));
+
+            // create profile
+            $this->userService->createOrUpdateProfile(new Request([
+                'user_id' => $user->id,
+                'type' => $args['type'],
+            ]));
+
+            return $this->authService->authenticateUser(new Request([
+                'email' => $user->getEmail(),
+            ]));
+        }
+
     }
 
     public function verifyEmailOTP($_, array $args)

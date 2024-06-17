@@ -51,9 +51,9 @@ class AuthService
 
     public function authenticateUser($request)
     {
-        if ($request->has('password')) {
+        $username = $request->email;
 
-            $username = $request->email;
+        if ($request->has('password')) {
 
             $user = User::where('email', $username)->first();
 
@@ -72,7 +72,9 @@ class AuthService
             }
 
         } else {
-            throw new GraphQLException('Please enter a password');
+            $token = Auth::attempt([
+                'email' => $username,
+            ]);
         }
 
         if (env('APP_STATE') == 'prod') {
@@ -83,10 +85,10 @@ class AuthService
                 foreach ($existingAuthTokens as $authToken) {
                     try {
                         Auth::setToken($authToken->auth_token)->invalidate();
-                        $authToken->delete();
+                        // $authToken->delete();
                     } catch (\Throwable $th) {
                         //throw $th;
-                        $authToken->delete();
+                        // $authToken->delete();
                         continue;
                     }
 
