@@ -8,6 +8,7 @@ use App\Models\UserAuthTokens;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthService
 {
@@ -72,9 +73,7 @@ class AuthService
             }
 
         } else {
-
-            $token = $user->createToken('AuthToken')->plainTextToken;
-
+            $token = JWTAuth::fromUser($user);
         }
 
         if (env('APP_STATE') == 'prod') {
