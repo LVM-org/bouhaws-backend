@@ -74,7 +74,8 @@ final class AuthMutator
     public function googleAuth($_, array $args)
     {
         $token = $args['token'];
-        $user = Socialite::driver('google')->userFromToken($token);
+        $access_token = Socialite::driver('google')->getAccessTokenResponse($token);
+        $user = Socialite::driver('google')->userFromToken($access_token['access_token']);
 
         $existingUser = User::where('email', $user->getEmail())->first();
 
