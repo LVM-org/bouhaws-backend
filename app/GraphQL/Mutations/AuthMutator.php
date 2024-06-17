@@ -133,7 +133,7 @@ final class AuthMutator
     {
         try {
             $user = $this->authService->verifyUserOtp(new Request([
-                'email' => $args['email'],
+                'user_uuid' => $args['email'],
                 'otp' => $args['otp'],
             ]));
 

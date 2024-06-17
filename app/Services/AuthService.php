@@ -173,10 +173,10 @@ class AuthService
     public function verifyUserOtp($request)
     {
         try {
-            $user = User::where('uuid', $request->email)->first();
+            $user = User::where('uuid', $request->user_uuid)->first();
 
             if ($user == null) {
-                $user = User::where('email', $request->email)->first();
+                $user = User::where('email', $request->user_uuid)->first();
             }
 
             if ($user->email_verified_at != null) {
