@@ -118,7 +118,7 @@ final class AuthMutator
             ]));
 
             $this->authService->verifyUserOtp(new Request([
-                'user_uuid' => $user->email,
+                'user_uuid' => $args['email'],
                 'otp' => $otp,
             ]));
 
