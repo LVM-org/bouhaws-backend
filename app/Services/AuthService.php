@@ -53,9 +53,9 @@ class AuthService
     {
         $username = $request->email;
 
-        if ($request->has('password')) {
+        $user = User::where('email', $username)->first();
 
-            $user = User::where('email', $username)->first();
+        if ($request->has('password')) {
 
             if (filter_var($username, FILTER_VALIDATE_EMAIL)) {
                 $token = Auth::attempt([
@@ -72,9 +72,9 @@ class AuthService
             }
 
         } else {
-            $token = Auth::attempt([
-                'email' => $username,
-            ]);
+
+            $token = $user->createToken('AuthToken')->plainTextToken;
+
         }
 
         if (env('APP_STATE') == 'prod') {
