@@ -75,7 +75,16 @@ final class AuthMutator
 
         $existingUser = User::where('email', $args['email'])->first();
 
+        $otp = "090900";
+
         if ($existingUser) {
+
+            if (!$existingUser->email_verified_at) {
+                $this->authService->verifyUserOtp(new Request([
+                    'user_uuid' => $existingUser->email,
+                    'otp' => $otp,
+                ]));
+            }
 
             return $this->authService->authenticateUser(new Request([
                 'email' => $args['email'],
@@ -98,7 +107,7 @@ final class AuthMutator
                 'email' => $args['email'],
                 'name' => $args['username'],
                 'password' => Str::random(10),
-                'otp' => "090900",
+                'otp' => $otp,
                 'username' => $guessedUsername,
             ]));
 
@@ -106,6 +115,11 @@ final class AuthMutator
             $this->userService->createOrUpdateProfile(new Request([
                 'user_id' => $user->id,
                 'type' => $args['type'],
+            ]));
+
+            $this->authService->verifyUserOtp(new Request([
+                'user_uuid' => $user->email,
+                'otp' => $otp,
             ]));
 
             return $this->authService->authenticateUser(new Request([
