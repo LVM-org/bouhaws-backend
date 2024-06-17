@@ -10,7 +10,6 @@ use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
-use Laravel\Socialite\Facades\Socialite;
 
 final class AuthMutator
 {
@@ -73,22 +72,19 @@ final class AuthMutator
 
     public function googleAuth($_, array $args)
     {
-        $token = $args['token'];
 
-        $user = Socialite::driver('google')->stateless()->userFromToken($token);
-
-        $existingUser = User::where('email', $user->getEmail())->first();
+        $existingUser = User::where('email', $args['email'])->first();
 
         if ($existingUser) {
 
             return $this->authService->authenticateUser(new Request([
-                'email' => $user->getEmail(),
+                'email' => $args['email'],
             ]));
 
         } else {
 
             // set up user name
-            $guessedUsername = explode("@", $user->getEmail());
+            $guessedUsername = explode("@", $args['email']);
 
             $guessedUsername = $guessedUsername[0];
 
@@ -99,8 +95,8 @@ final class AuthMutator
             }
 
             $user = $this->authService->saveUser(new Request([
-                'email' => $user->getEmail(),
-                'name' => $user->getName(),
+                'email' => $args['email'],
+                'name' => $args['username'],
                 'password' => Str::random(10),
                 'otp' => "090900",
                 'username' => $guessedUsername,
@@ -113,7 +109,7 @@ final class AuthMutator
             ]));
 
             return $this->authService->authenticateUser(new Request([
-                'email' => $user->getEmail(),
+                'email' => $args['email'],
             ]));
         }
 

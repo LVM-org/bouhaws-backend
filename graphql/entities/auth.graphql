@@ -13,7 +13,8 @@ extend type Mutation {
         username: String
         type: String!
     ): User! @field(resolver: "AuthMutator@signUp")
-    GoogleAuth(token: String!, type: String!): AuthResponse!
+    "Google auth"
+    GoogleAuth(email: String!, username: String!, type: String!): AuthResponse!
         @field(resolver: "AuthMutator@googleAuth")
     "Sign in a user"
     SignIn(password: String!, email: String! @trim): AuthResponse!
