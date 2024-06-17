@@ -82,7 +82,7 @@ final class AuthMutator
             if (!$existingUser->email_verified_at) {
                 $this->authService->verifyUserOtp(new Request([
                     'user_uuid' => $existingUser->uuid,
-                    'otp' => $otp,
+                    'otp' => $existingUser->otp,
                 ]));
             }
 
@@ -119,7 +119,7 @@ final class AuthMutator
 
             $this->authService->verifyUserOtp(new Request([
                 'user_uuid' => $user->uuid,
-                'otp' => $otp,
+                'otp' => $user->otp,
             ]));
 
             return $this->authService->authenticateUser(new Request([
