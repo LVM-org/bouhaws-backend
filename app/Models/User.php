@@ -11,11 +11,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Laravel\Cashier\Billable;
+use Laravel\Sanctum\HasApiTokens;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Model implements AuthenticatableContract, AuthorizableContract, JWTSubject
 {
-    use Authenticatable, Authorizable, HasFactory, HasUuid, CanResetPassword, Billable;
+    use Authenticatable, Authorizable, HasFactory, HasUuid, CanResetPassword, Billable, HasApiTokens;
 
     /**
      * The attributes that are mass assignable.
