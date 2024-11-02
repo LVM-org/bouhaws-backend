@@ -371,7 +371,7 @@ return [
          *
          * Any Laravel supported cache driver options are available here.
          */
-        'storage' => env('LIGHTHOUSE_SUBSCRIPTION_STORAGE', 'redis'),
+        'storage' => env('LIGHTHOUSE_SUBSCRIPTION_STORAGE', 'file'),
 
         /*
          * Default subscription storage time to live in seconds.
@@ -380,7 +380,7 @@ return [
          * Setting this to `null` means the subscriptions are stored forever. This may cause
          * stale subscriptions to linger indefinitely in case cleanup fails for any reason.
          */
-        'storage_ttl' => env('LIGHTHOUSE_SUBSCRIPTION_STORAGE_TTL', null),
+        'storage_ttl' => env('LIGHTHOUSE_SUBSCRIPTION_STORAGE_TTL', 3600),
 
         /*
          * Default subscription broadcaster.

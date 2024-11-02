@@ -8,6 +8,7 @@ use App\Models\ConversationMember;
 use App\Models\ConversationMessage;
 use App\Models\Profile;
 use App\Models\User;
+use Nuwave\Lighthouse\Execution\Utils\Subscription;
 
 class UserService
 {
@@ -17,7 +18,7 @@ class UserService
 
         if ($userProfile == null) {
             $userProfile = Profile::create([
-                'type' => 'student',
+                'type' => $request->type,
                 'user_id' => $request->user_id,
             ]);
 
@@ -27,11 +28,17 @@ class UserService
                 'photo_url' => $request->photo_url ? $request->photo_url : $userProfile->photo_url,
                 'bio' => $request->bio ? $request->bio : $userProfile->bio,
                 'school' => $request->school ? $request->school : $userProfile->school,
+                'gender' => $request->gender ? $request->gender : $userProfile->gender,
+                'city' => $request->city ? $request->city : $userProfile->city,
+                'nationality' => $request->nationality ? $request->nationality : $userProfile->nationality,
                 'student_number' => $request->student_number ? $request->student_number : $userProfile->student_number,
                 'year_of_enrollment' => $request->year_of_enrollment ? $request->year_of_enrollment : $userProfile->year_of_enrollment,
-                'type' => $request->type ? $request->type : $userProfile->type,
                 'enrolled_courses_uuid' => $request->enrolled_courses_uuid ? $request->enrolled_courses_uuid : $userProfile->enrolled_courses_uuid,
                 'enrolled_classes_uuid' => $request->enrolled_classes_uuid ? $request->enrolled_classes_uuid : $userProfile->enrolled_classes_uuid,
+                'cover_image' => $request->cover_image ? $request->cover_image : $userProfile->cover_image,
+                'website_link' => $request->website_link ? $request->website_link : $userProfile->website_link,
+                'instagram_link' => $request->instagram_link ? $request->instagram_link : $userProfile->instagram_link,
+                'twitter_link' => $request->twitter_link ? $request->twitter_link : $userProfile->twitter_link,
                 'push_notification_enabled' => $request->push_notification_enabled != null ? $request->push_notification_enabled : $userProfile->push_notification_enabled,
             ]);
 
@@ -79,6 +86,10 @@ class UserService
                         ]);
 
                         $conversationMember->save();
+
+                        $conversation->user_uuid = $user_uuid;
+
+                        Subscription::broadcast('conversationMembership', $conversation);
                     }
 
                 }
@@ -91,12 +102,36 @@ class UserService
 
         } else {
 
+            $user = User::where('id', $request->user_id)->first();
+
+            $existingConversation = Conversation::where('user_id', $request->user_id)->where('associated_users_uuid', json_encode($request->associated_users_uuid))->first();
+
+            if ($existingConversation == null) {
+
+                // check if it is the other members that started the conversation
+                foreach ($request->associated_users_uuid as $userUuid) {
+                    $useData = User::where('uuid', $userUuid)->first();
+
+                    // Modify this if a group will contain more that 2 users
+                    $associatedUsers = json_encode([$user->uuid]);
+
+                    if ($useData && $existingConversation == null) {
+                        $existingConversation = Conversation::where('user_id', $useData->id)->where('associated_users_uuid', $associatedUsers)->first();
+                    }
+
+                }
+            }
+
+            if ($existingConversation) {
+                return $existingConversation;
+            }
+
             $conversation = Conversation::create([
                 'user_id' => $request->user_id,
                 'associated_users_uuid' => json_encode($request->associated_users_uuid),
             ]);
 
-            $user = User::where('id', $request->user_id)->first();
+            $conversation->save();
 
             if ($user) {
                 $conversationOwner = ConversationMember::create([
@@ -115,9 +150,12 @@ class UserService
                 ]);
 
                 $conversationMember->save();
-            }
 
-            $conversation->save();
+                $conversation->user_uuid = $user_uuid;
+
+                Subscription::broadcast('conversationMembership', $conversation);
+
+            }
 
             return $conversation;
 
@@ -136,6 +174,23 @@ class UserService
 
         $message->save();
 
+        $conversation = Conversation::where('id', $request->conversation_id)->first();
+
+        $message->conversation_uuid = $conversation->uuid;
+
+        Subscription::broadcast('conversationMessageCreated', $message, false);
+
         return $message;
+    }
+
+    public function uploadFile($request, $resizeImg = true)
+    {
+
+        $fileName = time() . '_' . $request->file('attachment')->getClientOriginalName();
+        $filePath = $request->file('attachment')->storeAs('uploads', $fileName, 'public');
+        $filePath = '/storage/' . $filePath;
+
+        return asset($filePath);
+
     }
 }

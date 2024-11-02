@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Conversation extends Model
 {
@@ -16,7 +17,7 @@ class Conversation extends Model
      */
     protected $guarded = [];
 
-    protected $appends = ['associated_users'];
+    protected $appends = ['associated_users', 'other_member', 'last_message'];
 
     /**
      * Get the route key for the liquidation.
@@ -38,5 +39,16 @@ class Conversation extends Model
         $associated_users_uuid = $this->associated_users_uuid ? json_decode($this->associated_users_uuid) : [];
 
         return User::whereIn('uuid', $associated_users_uuid)->get();
+    }
+
+    public function getOtherMemberAttribute()
+    {
+        $authUser = Auth::user();
+        return ConversationMember::where('conversation_uuid', $this->uuid)->where('user_uuid', '!=', $authUser->uuid)->first()->user;
+    }
+
+    public function getLastMessageAttribute()
+    {
+        return ConversationMessage::where('conversation_id', $this->id)->orderBy('created_at', 'desc')->first();
     }
 }

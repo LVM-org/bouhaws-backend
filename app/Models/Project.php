@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Project extends Model
 {
@@ -15,6 +16,8 @@ class Project extends Model
      * @var array
      */
     protected $guarded = [];
+
+    protected $appends = ['user_entry'];
 
     /**
      * Get the route key for the liquidation.
@@ -33,7 +36,7 @@ class Project extends Model
 
     public function category()
     {
-        return $this->belongsTo(ProjectCategory::class);
+        return $this->belongsTo(ProjectCategory::class, 'project_category_id', 'id');
     }
 
     public function entries()
@@ -41,8 +44,18 @@ class Project extends Model
         return $this->hasMany(ProjectEntry::class);
     }
 
+    public function getUserEntryAttribute()
+    {
+        return ProjectEntry::where('user_id', Auth::user()->id)->where('project_id', $this->id)->first();
+    }
+
     public function milestones()
     {
         return $this->hasMany(ProjectMilestone::class);
+    }
+
+    public function bouhawsclass()
+    {
+        return $this->belongsTo(BouhawsClass::class, 'bouhaws_class_id', 'id');
     }
 }

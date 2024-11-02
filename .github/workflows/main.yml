@@ -16,7 +16,7 @@ jobs:
       with:
         node-version: '16.x'
     - run: npm install
-    - run: npm run production
+    - run: npm run build
     - name: Commit built assets
       run: |
         git config --local user.email "action@github.com"
@@ -30,5 +30,6 @@ jobs:
       with:
         username: root
         host: 146.190.170.255
-        password: ${{ secrets.SSH_PASSWORD }}
-        script: 'cd /var/www/bouhaws && ./server_deploy.sh'
+        password: ${{ secrets.DEPLOY_PASSWORD }}
+        script: 'cd /var/www/bouhaws && sudo chmod u+x /var/www/bouhaws/server_deploy.sh && /var/www/bouhaws/server_deploy.sh'
+

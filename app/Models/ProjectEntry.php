@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class ProjectEntry extends Model
 {
@@ -11,6 +12,9 @@ class ProjectEntry extends Model
 
     protected $appends = [
         'images',
+        'category',
+        'liked',
+        'bookmarked',
     ];
 
     /**
@@ -55,9 +59,39 @@ class ProjectEntry extends Model
         return $this->hasMany(ProjectEntryBookmark::class);
     }
 
+    public function grade()
+    {
+        return $this->hasOne(ProjectEntryGrade::class);
+    }
+
     public function comments()
     {
         return $this->hasMany(ProjectEntryComment::class);
+    }
+
+    public function getCategoryAttribute()
+    {
+        if ($this->project_category_id) {
+            return ProjectCategory::where('id', $this->project_category_id)->first();
+        } else if ($this->project) {
+            return ProjectCategory::where('id', $this->project->project_category_id)->first();
+        } else {
+            return null;
+        }
+    }
+
+    public function getLikedAttribute()
+    {
+        $userLike = ProjectEntryLike::where('user_id', Auth::user()->id)->where('project_entry_id', $this->id)->first();
+
+        return $userLike ? true : false;
+    }
+
+    public function getBookmarkedAttribute()
+    {
+        $userBookmark = ProjectEntryBookmark::where('user_id', Auth::user()->id)->where('project_entry_id', $this->id)->first();
+
+        return $userBookmark ? true : false;
     }
 
 }

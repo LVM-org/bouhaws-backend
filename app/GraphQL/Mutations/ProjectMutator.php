@@ -3,6 +3,7 @@
 namespace App\GraphQL\Mutations;
 
 use App\Services\ProjectService;
+use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -21,7 +22,10 @@ final class ProjectMutator
 
         // upload to cloud
         if (isset($args['image'])) {
-
+            $userService = new UserService();
+            $request = new Request();
+            $request->files->set('attachment', $args['image']);
+            $mediaUrl = $userService->uploadFile($request, false);
         }
 
         return $mediaUrl;
@@ -47,7 +51,10 @@ final class ProjectMutator
         $mediaUrl = null;
 
         if (isset($args['photo_url'])) {
-            // save file to cloud
+            $userService = new UserService();
+            $request = new Request();
+            $request->files->set('attachment', $args['photo_url']);
+            $mediaUrl = $userService->uploadFile($request, false);
         }
 
         return $this->projectService->createOrUpdateProject(new Request([
@@ -61,6 +68,7 @@ final class ProjectMutator
             'type' => $args['type'],
             'total_points' => $args['total_points'],
             'project_category_id' => $args['project_category_id'],
+            'bouhaws_class_id' => isset($args['bouhaws_class_id']) ? $args['bouhaws_class_id'] : null,
         ]));
     }
 
@@ -69,7 +77,10 @@ final class ProjectMutator
         $mediaUrl = null;
 
         if (isset($args['photo_url'])) {
-            // save file to cloud
+            $userService = new UserService();
+            $request = new Request();
+            $request->files->set('attachment', $args['photo_url']);
+            $mediaUrl = $userService->uploadFile($request, false);
         }
 
         return $this->projectService->createOrUpdateProject(new Request([
@@ -84,6 +95,7 @@ final class ProjectMutator
             'total_points' => isset($args['total_points']) ? $args['total_points'] : null,
             'project_category_id' => isset($args['project_category_id']) ? $args['project_category_id'] : null,
             'status' => isset($args['status']) ? $args['status'] : null,
+            'bouhaws_class_id' => isset($args['bouhaws_class_id']) ? $args['bouhaws_class_id'] : null,
         ]));
     }
 
@@ -114,7 +126,8 @@ final class ProjectMutator
             'project_id' => $args['project_id'],
             'title' => $args['title'],
             'description' => $args['description'],
-            'images' => json_encode([]),
+            'images' => isset($args['images']) ? json_encode($args['images']) : json_encode([]),
+            'project_category_id' => isset($args['project_category_id']) ? $args['project_category_id'] : null
         ]));
     }
 
@@ -153,6 +166,14 @@ final class ProjectMutator
             'content' => $args['content'],
             'is_reply' => $args['is_reply'],
             'replied_comment_id' => isset($args['replied_comment_id']) ? $args['replied_comment_id'] : null,
+        ]));
+    }
+
+    public function gradeProjectEntry($_, array $args)
+    {
+        return $this->projectService->gradeProjectEntry(new Request([
+            'project_entry_uuid' => $args['project_entry_uuid'],
+            'milestones' => $args['milestones'],
         ]));
     }
 

@@ -15,6 +15,9 @@ type BouhawsClass {
     "All projects attached to a class"
     projects: [Project!] @hasMany
 
+    "All students attached to a class"
+    students: [User!]
+
     "The class description"
     description: String
 
@@ -37,7 +40,7 @@ type Course {
     code: String
 
     "The course title"
-    title: String!
+    title: String
 
     "The course photo_url"
     photo_url: String

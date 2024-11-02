@@ -3,6 +3,7 @@
 namespace App\GraphQL\Mutations;
 
 use App\Services\SchoolService;
+use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -39,7 +40,10 @@ final class CommonMutator
         $mediaUrl = null;
 
         if (isset($args['photo_url'])) {
-            // save file to cloud
+            $userService = new UserService();
+            $request = new Request();
+            $request->files->set('attachment', $args['photo_url']);
+            $mediaUrl = $userService->uploadFile($request, false);
         }
 
         return $this->schoolService->createOrUpdateCourse(new Request([
@@ -55,7 +59,10 @@ final class CommonMutator
         $mediaUrl = null;
 
         if (isset($args['photo_url'])) {
-            // save file to cloud
+            $userService = new UserService();
+            $request = new Request();
+            $request->files->set('attachment', $args['photo_url']);
+            $mediaUrl = $userService->uploadFile($request, false);
         }
 
         return $this->schoolService->createOrUpdateCourse(new Request([

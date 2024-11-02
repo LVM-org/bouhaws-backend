@@ -8,6 +8,7 @@ use App\Models\ProjectCategory;
 use App\Models\ProjectEntry;
 use App\Models\ProjectEntryBookmark;
 use App\Models\ProjectEntryComment;
+use App\Models\ProjectEntryGrade;
 use App\Models\ProjectEntryLike;
 use App\Models\ProjectMilestone;
 use Carbon\Carbon;
@@ -58,6 +59,7 @@ class ProjectService
                     'total_points' => $request->total_points ? $request->total_points : $project->total_points,
                     'project_category_id' => $request->project_category_id ? $request->project_category_id : $project->project_category_id,
                     'status' => $request->status ? $request->status : $project->status,
+                    'bouhaws_class_id' => $request->bouhaws_class_id ? $request->bouhaws_class_id : $project->bouhaws_class_id,
                 ]);
 
             } else {
@@ -79,6 +81,7 @@ class ProjectService
                 'type' => $request->type,
                 'total_points' => $request->total_points,
                 'project_category_id' => $request->project_category_id,
+                'bouhaws_class_id' => $request->bouhaws_class_id,
             ]);
 
             $project->save();
@@ -149,6 +152,7 @@ class ProjectService
                 'description' => $request->description,
                 'images' => $request->images,
                 'status' => 'draft',
+                'project_category_id' => $request->project_category_id,
             ]);
 
             $projectEntry->save();
@@ -166,6 +170,13 @@ class ProjectService
 
         $projectEntryBookmark->save();
 
+        // Update project activity
+        $currentActivities = (float) $projectEntryBookmark->project_entry->activities;
+
+        $projectEntryBookmark->project_entry->update([
+            'activities' => $currentActivities + 1,
+        ]);
+
         return $projectEntryBookmark;
     }
 
@@ -177,6 +188,13 @@ class ProjectService
         ]);
 
         $projectEntryLike->save();
+
+        // Update project activity
+        $currentActivities = (float) $projectEntryLike->project_entry->activities;
+
+        $projectEntryLike->project_entry->update([
+            'activities' => $currentActivities + 1,
+        ]);
 
         return $projectEntryLike;
     }
@@ -193,7 +211,54 @@ class ProjectService
 
         $projectEntrycomment->save();
 
+        // Update project activity
+        $currentActivities = (float) $projectEntrycomment->project_entry->activities;
+
+        $projectEntrycomment->project_entry->update([
+            'activities' => $currentActivities + 1,
+        ]);
+
         return $projectEntrycomment;
+    }
+
+    public function gradeProjectEntry($request)
+    {
+
+        $projectEntry = ProjectEntry::where('uuid', $request->project_entry_uuid)->first();
+
+        if ($projectEntry == null) {
+            throw new GraphQLException("Project entry not found");
+        }
+
+        $entryGrade = ProjectEntryGrade::where('project_entry_id', $projectEntry->id)->first();
+
+        $projectMilestones = json_decode($request->milestones, true);
+
+        $totalPoints = 0;
+
+        foreach ($projectMilestones as $milestone) {
+            $totalPoints += $milestone['points'];
+        }
+
+        if ($entryGrade) {
+
+            $entryGrade->update([
+                'total_points' => $totalPoints,
+                'milestones' => $request->milestones,
+            ]);
+
+        } else {
+            $entryGrade = ProjectEntryGrade::create([
+                "user_id" => $projectEntry->user_id,
+                "project_entry_id" => $projectEntry->id,
+                'total_points' => $totalPoints,
+                'milestones' => $request->milestones,
+            ]);
+
+            $entryGrade->save();
+        }
+
+        return $entryGrade;
     }
 
     public function deleteProjectMilestone($uuid)
@@ -210,4 +275,5 @@ class ProjectService
 
         return true;
     }
+
 }

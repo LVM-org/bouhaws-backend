@@ -2,3 +2,8 @@ type AuthResponse {
     token: String!
     user: User!
 }
+
+input EntryImage {
+    milestone: String!
+    url: String!
+}

@@ -1,8 +1,20 @@
 extend type Query @guard {
     "Get the top 10 users"
-    LeaderBoard: [User!] @field(resolver: "UserQuery@leaderboard")
+    LeaderBoard: [Profile!] @field(resolver: "UserQuery@leaderboard")
     "Get a single conversation"
     Conversation(uuid: String! @eq): Conversation @first
+    "Get messages for a particular conversations"
+    ConversationMessages(conversation_id: String! @eq): [ConversationMessage!]
+        @paginate
+    SingleUser(uuid: String! @eq): User @first
+    MyNotifications: [Notification!]!
+        @field(resolver: "UserQuery@myNotifications")
+    "Get transactions"
+    GetTransactions(
+        where: _ @whereConditions(columns: ["created_at"])
+        orderBy: _ @orderBy(columns: ["created_at"])
+        hasUser: _ @whereHasConditions(columns: ["uuid"])
+    ): [Transaction!]! @paginate
 }
 
 # User mutations
@@ -17,8 +29,16 @@ extend type Mutation @guard {
         student_number: String
         year_of_enrollment: String
         type: String
+        phone_number: String
+        gender: String
+        city: String
+        nationality: String
         push_notification_enabled: Boolean
-    ): BouhawsClass! @field(resolver: "UserMutator@updateProfile")
+        website_link: String
+        instagram_link: String
+        twitter_link: String
+        cover_image: Upload
+    ): Profile! @field(resolver: "UserMutator@updateProfile")
     "Start a new conversation"
     StartConversation(
         "An array of the uuid of the other users in the conversation"
@@ -35,9 +55,22 @@ extend type Mutation @guard {
         "can be text, image, image_gallery"
         type: String!
         conversation_id: Int!
-        content: String!
+        content: String
         "For single image message, send the uploaded image url, for image_gallery message, send an stringified array of the uploaded images url"
         media: String!
     ): ConversationMessage!
         @field(resolver: "UserMutator@saveConversationMessage")
+    MarkNotificationsAsRead(
+        "An array of the uuid of the notifications to be marked as read"
+        notification_uuids: [String!]!
+    ): Boolean! @field(resolver: "UserMutator@markNotificationsAsRead")
+}
+
+extend type Subscription @guard {
+    "Subscribe to user conversation messages"
+    conversationMessageCreated(
+        conversationList: [String!]!
+    ): ConversationMessage
+    "Subscribe to user conversation membership"
+    conversationMembership(userUuid: String!): Conversation
 }

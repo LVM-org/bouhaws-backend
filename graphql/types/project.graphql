@@ -1,3 +1,8 @@
+type EntryImageType {
+    milestone: String!
+    url: String!
+}
+
 "A new project"
 type Project {
     "Unique primary key."
@@ -39,11 +44,17 @@ type Project {
     "The project category"
     category: ProjectCategory! @belongsTo
 
+    "The current user entry"
+    user_entry: ProjectEntry
+
     "The project entries"
     entries: [ProjectEntry!] @hasMany
 
     "The project milestones"
     milestones: [ProjectMilestone!] @hasMany
+
+    "The project class if it is not a challenge"
+    bouhawsclass: BouhawsClass @belongsTo
 
     "When the project was created."
     created_at: DateTime!
@@ -109,7 +120,13 @@ type ProjectEntry {
     user: User! @belongsTo
 
     "The project itself"
-    project: Project! @belongsTo
+    project: Project @belongsTo
+
+    "The project category"
+    category: ProjectCategory
+
+    "The project category id"
+    project_category_id: Int
 
     "The current project milestone for the entry"
     current_milestone_index: Int!
@@ -121,7 +138,7 @@ type ProjectEntry {
     description: String!
 
     "The entry images. This is an array of all the images_cdn_url"
-    images: [String!]
+    images: [EntryImageType]
 
     "The status of the entry. Default is 'active'"
     status: String
@@ -129,8 +146,20 @@ type ProjectEntry {
     "The entry likes"
     likes: [ProjectEntryLike!] @hasMany
 
+    "The entry grade"
+    grade: ProjectEntryGrade
+
+    "Liked by user"
+    liked: Boolean!
+
+    "bookedmark by user"
+    bookmarked: Boolean!
+
     "The entry bookmarks"
     bookmarks: [ProjectEntryBookmark!] @hasMany
+
+    "The entry activities. Total likes, bookmarks and comments"
+    activities: Int
 
     "The entry comments"
     comments: [ProjectEntryComment!] @hasMany
@@ -160,6 +189,40 @@ type ProjectEntryBookmark {
     created_at: DateTime!
 
     "When the project entry bookmark was last updated."
+    updated_at: DateTime!
+}
+
+"Milestone grade"
+type MilestoneGrade {
+    uuid: String!
+    points: Float!
+    comment: String
+}
+
+"A single project entry grade"
+type ProjectEntryGrade {
+    "Unique primary key."
+    id: ID!
+
+    "Unique UUID"
+    uuid: String!
+
+    "The user that made the entry like"
+    user: User! @belongsTo
+
+    "The project entry itself"
+    project_entry: ProjectEntry! @belongsTo
+
+    "The total points"
+    total_points: Float!
+
+    "The milestones grades"
+    milestones: [MilestoneGrade!]!
+
+    "When the project entry like was created."
+    created_at: DateTime!
+
+    "When the project entry like was last updated."
     updated_at: DateTime!
 }
 

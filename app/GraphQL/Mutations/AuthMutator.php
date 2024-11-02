@@ -5,19 +5,23 @@ namespace App\GraphQL\Mutations;
 use App\Exceptions\GraphQLException;
 use App\Models\User;
 use App\Services\AuthService;
+use App\Services\NotificationService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 final class AuthMutator
 {
     protected $authService;
     protected $userService;
+    protected $notificationService;
 
     public function __construct()
     {
         $this->authService = new AuthService();
         $this->userService = new UserService();
+        $this->notificationService = new NotificationService();
     }
 
     public function signIn($_, array $args)
@@ -30,42 +34,127 @@ final class AuthMutator
 
     public function signUp($_, array $args)
     {
-        $otp = mt_rand(20000, 90000);
+        $otp = mt_rand(2000, 9000);
+
+        // set up user name
+        $guessedUsername = explode("@", $args['email']);
+
+        $guessedUsername = $guessedUsername[0];
+
+        $userWithUsername = User::where('username', $guessedUsername)->first();
+
+        if ($userWithUsername) {
+            $guessedUsername = $guessedUsername . Str::random(4);
+        }
 
         $user = $this->authService->saveUser(new Request([
             'email' => $args['email'],
-            'name' => $args['name'],
+            'name' => isset($args['username']) ? $args['username'] : null,
             'password' => $args['password'],
             'otp' => $otp,
-            'username' => isset($args['username']) ? $args['username'] : null,
+            'username' => $guessedUsername,
         ]));
 
         // create profile
         $this->userService->createOrUpdateProfile(new Request([
             'user_id' => $user->id,
+            'type' => $args['type'],
         ]));
 
         // send verify email otp
 
+        $this->notificationService->sendVerifyEmail((object) [
+            'user' => $user,
+        ]);
+
         return $user;
+    }
+
+    public function googleAuth($_, array $args)
+    {
+
+        $existingUser = User::where('email', $args['email'])->first();
+
+        $otp = "090900";
+
+        if ($existingUser) {
+
+            if (!$existingUser->email_verified_at) {
+                $this->authService->verifyUserOtp(new Request([
+                    'user_uuid' => $existingUser->uuid,
+                    'otp' => $existingUser->otp,
+                ]));
+            }
+
+            return $this->authService->authenticateUser(new Request([
+                'email' => $args['email'],
+            ]));
+
+        } else {
+
+            // set up user name
+            $guessedUsername = explode("@", $args['email']);
+
+            $guessedUsername = $guessedUsername[0];
+
+            $userWithUsername = User::where('username', $guessedUsername)->first();
+
+            if ($userWithUsername) {
+                $guessedUsername = $guessedUsername . Str::random(4);
+            }
+
+            $user = $this->authService->saveUser(new Request([
+                'email' => $args['email'],
+                'name' => $args['username'],
+                'password' => Str::random(10),
+                'otp' => $otp,
+                'username' => $guessedUsername,
+            ]));
+
+            // create profile
+            $this->userService->createOrUpdateProfile(new Request([
+                'user_id' => $user->id,
+                'type' => $args['type'],
+            ]));
+
+            $this->authService->verifyUserOtp(new Request([
+                'user_uuid' => $user->uuid,
+                'otp' => $user->otp,
+            ]));
+
+            return $this->authService->authenticateUser(new Request([
+                'email' => $args['email'],
+            ]));
+        }
+
     }
 
     public function verifyEmailOTP($_, array $args)
     {
-        $user = $this->authService->verifyUserOtp(new Request([
-            'email' => $args['email'],
-            'otp' => $args['otp'],
-        ]));
+        try {
+            $user = $this->authService->verifyUserOtp(new Request([
+                'user_uuid' => $args['email'],
+                'otp' => $args['otp'],
+            ]));
 
-        return $user;
+            return $user;
+
+        } catch (\Throwable $th) {
+
+            throw new GraphQLException($th->getMessage());
+        }
     }
 
     public function resendVerifyEmail($_, array $args)
     {
 
-        $this->authService->resetUserOtp($args['user_uuid']);
+        $user = $this->authService->resetUserOtp($args['user_uuid']);
 
         // resend verify email otp
+
+        $this->notificationService->sendVerifyEmail((object) [
+            'user' => $user,
+        ]);
 
         return true;
     }
@@ -75,8 +164,12 @@ final class AuthMutator
         $user = User::where('email', $args['email'])->first();
 
         if ($user) {
-            $this->authService->resetUserOtp($user->uuid);
+            $user = $this->authService->resetUserOtp($user->uuid);
             // send reset password email
+
+            $this->notificationService->sendForgotPasswordEmail((object) [
+                'user' => $user,
+            ]);
 
             return true;
 

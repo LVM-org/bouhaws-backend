@@ -9,12 +9,13 @@ use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\Access\Authorizable;
+use Laravel\Cashier\Billable;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Model implements AuthenticatableContract, AuthorizableContract
+class User extends Model implements AuthenticatableContract, AuthorizableContract, JWTSubject
 {
-    use Authenticatable, Authorizable, HasFactory, HasUuid, CanResetPassword, SoftDeletes;
+    use Authenticatable, Authorizable, HasFactory, HasUuid, CanResetPassword, Billable;
 
     /**
      * The attributes that are mass assignable.
@@ -29,6 +30,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'email_verified_at',
         'otp',
         'otp_expires_at',
+        'phone_number',
     ];
 
     /**
@@ -51,7 +53,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'password' => 'hashed',
     ];
 
-    protected $appends = ['conversations'];
+    protected $appends = ['conversations', 'my_classes'];
 
     /**
      * Get the route key for the liquidation.
@@ -80,9 +82,50 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         return Conversation::whereIn('uuid', $conversationMemberships)->get();
     }
 
+    public function getMyClassesAttribute()
+    {
+        if ($this->profile->type == 'student') {
+            $allProjectsId = $this->project_entries()->pluck('project_id')->toArray();
+            $allClassesId = Project::whereIn('id', $allProjectsId)->pluck('bouhaws_class_id')->toArray();
+            return BouhawsClass::whereIn('id', $allClassesId)->get();
+        } else {
+            return BouhawsClass::where('user_id', $this->id)->get();
+        }
+    }
+
     public function project_entries()
     {
         return $this->hasMany(ProjectEntry::class);
+    }
+
+    public function projects()
+    {
+        return $this->hasMany(Project::class);
+    }
+
+    public function project_bookmarked()
+    {
+        return $this->hasMany(ProjectEntryBookmark::class);
+    }
+
+    /**
+     * Get the identifier that will be stored in the subject claim of the JWT.
+     *
+     * @return mixed
+     */
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    /**
+     * Return a key value array, containing any custom claims to be added to the JWT.
+     *
+     * @return array
+     */
+    public function getJWTCustomClaims()
+    {
+        return [];
     }
 
 }

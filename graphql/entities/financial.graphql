@@ -2,3 +2,9 @@ extend type Query @guard {
     "Get the authenticated user wallet"
     UserWallet: Wallet @field(resolver: "UserQuery@userWallet")
 }
+
+extend type Mutation @guard {
+    "Fund a user wallet"
+    FundWallet(amount: Int!, paymentMethodId: String!): Boolean!
+        @field(resolver: "FinancialMutator@fundWallet")
+}

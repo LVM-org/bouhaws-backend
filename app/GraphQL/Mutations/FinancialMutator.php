@@ -2,10 +2,17 @@
 
 namespace App\GraphQL\Mutations;
 
+use App\Services\FinancialService;
+
 final class FinancialMutator
 {
-    public function __invoke($_, array $args)
+    public function fundWallet($_, array $args)
     {
-        // TODO implement the resolver
+        $financialService = new FinancialService();
+
+        return $financialService->processSingleCharge((object) [
+            "amount" => $args['amount'],
+            "paymentMethodId" => $args['paymentMethodId'],
+        ]);
     }
 }

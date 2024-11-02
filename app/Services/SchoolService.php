@@ -52,6 +52,7 @@ class SchoolService
                     'title' => $request->title ? $request->title : $course->title,
                     'photo_url' => $request->photo_url ? $request->photo_url : $course->photo_url,
                     'status' => $request->status ? $request->status : $course->status,
+                    'bouhaws_class_id' => $request->bouhaws_class_id ? $request->bouhaws_class_id : $course->bouhaws_class_id,
                 ]);
 
             } else {

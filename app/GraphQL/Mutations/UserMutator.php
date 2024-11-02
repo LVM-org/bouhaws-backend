@@ -5,6 +5,7 @@ namespace App\GraphQL\Mutations;
 use App\Exceptions\GraphQLException;
 use App\Models\Profile;
 use App\Models\User;
+use App\Services\NotificationService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -12,10 +13,12 @@ use Illuminate\Support\Facades\Auth;
 final class UserMutator
 {
     protected $userService;
+    protected $notificationService;
 
     public function __construct()
     {
         $this->userService = new UserService();
+        $this->notificationService = new NotificationService();
     }
 
     public function updateProfile($_, array $args)
@@ -41,13 +44,31 @@ final class UserMutator
             ]);
         }
 
-        $mediaUrl = null;
-
-        if (isset($args['photo_url'])) {
-            // save file to cloud
+        if (isset($args['phone_number'])) {
+            $user = Auth::user();
+            $user->update([
+                'phone_number' => $args['phone_number'],
+            ]);
         }
 
-        $this->userService->updateProfile(new Request([
+        $mediaUrl = null;
+        $coverImageUrl = null;
+
+        if (isset($args['photo_url'])) {
+            $userService = new UserService();
+            $request = new Request();
+            $request->files->set('attachment', $args['photo_url']);
+            $mediaUrl = $userService->uploadFile($request, false);
+        }
+
+        if (isset($args['cover_image'])) {
+            $userService = new UserService();
+            $request = new Request();
+            $request->files->set('attachment', $args['cover_image']);
+            $coverImageUrl = $userService->uploadFile($request, false);
+        }
+
+        $this->userService->createOrUpdateProfile(new Request([
             'photo_url' => $mediaUrl,
             'bio' => isset($args['bio']) ? $args['bio'] : null,
             'school' => isset($args['school']) ? $args['school'] : null,
@@ -55,6 +76,14 @@ final class UserMutator
             'year_of_enrollment' => isset($args['year_of_enrollment']) ? $args['year_of_enrollment'] : null,
             'type' => isset($args['type']) ? $args['type'] : null,
             'push_notification_enabled' => isset($args['push_notification_enabled']) ? $args['push_notification_enabled'] : null,
+            'gender' => isset($args['gender']) ? $args['gender'] : null,
+            'city' => isset($args['city']) ? $args['city'] : null,
+            'nationality' => isset($args['nationality']) ? $args['nationality'] : null,
+            'cover_image' => $coverImageUrl,
+            'website_link' => isset($args['website_link']) ? $args['website_link'] : null,
+            'instagram_link' => isset($args['instagram_link']) ? $args['instagram_link'] : null,
+            'twitter_link' => isset($args['twitter_link']) ? $args['twitter_link'] : null,
+            'user_id' => Auth::user()->id,
         ]));
 
         return Profile::where('user_id', Auth::user()->id)->first();
@@ -65,6 +94,7 @@ final class UserMutator
         return $this->userService->createOrUpdateConversation(new Request([
             'user_uuid' => Auth::user()->uuid,
             'associated_users_uuid' => $args['associated_users_uuid'],
+            'user_id' => Auth::user()->id,
         ]));
     }
 
@@ -82,12 +112,19 @@ final class UserMutator
             'type' => $args['type'],
             'user_id' => Auth::user()->id,
             'conversation_id' => $args['conversation_id'],
-            'content' => $args['content'],
+            'content' => isset($args['content']) ? $args['content'] : " ",
             'media' => $args['media'],
         ]));
 
         // broadcast message to other users
 
         return $conversationMessage;
+    }
+
+    public function markNotificationsAsRead($_, array $args)
+    {
+        $this->notificationService->markNotificationsAsRead($args['notification_uuids']);
+
+        return true;
     }
 }
