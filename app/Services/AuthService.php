@@ -100,6 +100,10 @@ class AuthService
             }
         }
 
+        if (!$token) {
+            throw new GraphQLException('Invalid credentials. Please try again.');
+        }
+
         return [
             'user' => $user,
             'token' => $token,
